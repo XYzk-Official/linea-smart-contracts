@@ -1,0 +1,26 @@
+export default {
+  AdminAddress: {
+    mainnet: "0x0000000000000000000000000000000000000000", // TO BE REPLACED
+    testnet: "0x10A0031781971bd37504354BBa49299885aD5cd4", // TO BE REPLACED
+  },
+  LPToken: {
+    mainnet: "0x0000000000000000000000000000000000000000", // TO BE REPLACED
+    testnet: "0x0000000000000000000000000000000000000000", // TO BE REPLACED
+  },
+  OfferingToken: {
+    mainnet: "0x0000000000000000000000000000000000000000", // TO BE REPLACED
+    testnet: "0x0000000000000000000000000000000000000000", // TO BE REPLACED
+  },
+  BeraSleepProfile: {
+    mainnet: "0x0000000000000000000000000000000000000000",
+    testnet: "0xAec50Cc30f13Ce836c81314f83486a6A06D75BD2",
+  },
+  StartBlock: {
+    mainnet: "0", // TO BE REPLACED
+    testnet: "0", // TO BE REPLACED
+  },
+  EndBlock: {
+    mainnet: "0", // TO BE REPLACED
+    testnet: "0", // TO BE REPLACED
+  },
+};
