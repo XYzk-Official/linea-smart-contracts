@@ -1,11 +1,11 @@
 {
-  "name": "berasleep-contracts",
+  "name": "xyzk-contracts",
   "version": "1.0.0",
-  "description": "BeraSleep contracts",
+  "description": "XYzK contracts",
   "private": true,
   "workspaces": ["projects/**"],
-  "repository": "https://github.com/Bera-Sleep/berasleep-smart-contracts",
-  "author": "BeraSleep",
+  "repository": "https://github.com/XYzk-Official/linea-smart-contracts",
+  "author": "XYzK",
   "license": "MIT",
   "scripts": {
     "format:check": "prettier --check 'projects/**/*.{js,ts,sol}'",
