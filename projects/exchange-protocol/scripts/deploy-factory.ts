@@ -6,13 +6,13 @@ const main = async () => {
   const [deployer] = await ethers.getSigners();
   const admin = deployer.address;
 
-  const BeraSleepFactoryContract = await ethers.getContractFactory("BeraSleepFactory");
+  const XYzKFactoryContract = await ethers.getContractFactory("XYzKFactory");
 
-  const beraSleepFactory = await BeraSleepFactoryContract.deploy(
+  const xYzKFactory = await XYzKFactoryContract.deploy(
     admin,
   );
 
-  console.log("BeraSleepFactoryContract: ", beraSleepFactory.address);
+  console.log("XYzKFactoryContract: ", xYzKFactory.address);
 };
 
 main()

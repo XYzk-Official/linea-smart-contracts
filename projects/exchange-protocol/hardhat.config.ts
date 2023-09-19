@@ -19,9 +19,9 @@ const bscMainnet: NetworkUserConfig = {
   accounts: [process.env.KEY_MAINNET!],
 };
 
-const ftmTest: NetworkUserConfig = {
-  url: "https://rpc.testnet.fantom.network",
-  chainId: 4002,
+const lineaTest: NetworkUserConfig = {
+  chainId: 59140,
+  url: "https://rpc.goerli.linea.build/",
   accounts: [process.env.KEY_TESTNET!],
 };
 
@@ -29,7 +29,7 @@ const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {},
-    testnet: ftmTest,
+    testnet: lineaTest,
     // mainnet: bscMainnet,
   },
   solidity: {

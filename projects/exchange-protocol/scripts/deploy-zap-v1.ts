@@ -19,7 +19,7 @@ const main = async () => {
     }
   }
 
-  if (!config.PancakeRouter[networkName] || config.PancakeRouter[networkName] === ethers.constants.AddressZero) {
+  if (!config.XYzKRouter[networkName] || config.XYzKRouter[networkName] === ethers.constants.AddressZero) {
     throw new Error("Missing router address, refer to README 'Deployment' section");
   }
 
@@ -29,20 +29,20 @@ const main = async () => {
 
   console.log("Deploying to network:", networkName);
 
-  // Deploy PancakeZapV1
-  console.log("Deploying PancakeZap V1..");
+  // Deploy XYzKZapV1
+  console.log("Deploying XYzKZap V1..");
 
-  const PancakeZapV1 = await ethers.getContractFactory("PancakeZapV1");
+  const XYzKZapV1 = await ethers.getContractFactory("XYzKZapV1");
 
-  const pancakeZap = await PancakeZapV1.deploy(
+  const xYzKZap = await XYzKZapV1.deploy(
     config.WBNB[networkName],
-    config.PancakeRouter[networkName],
+    config.XYzKRouter[networkName],
     config.MaxZapReverseRatio[networkName]
   );
 
-  await pancakeZap.deployed();
+  await xYzKZap.deployed();
 
-  console.log("PancakeZap V1 deployed to:", pancakeZap.address);
+  console.log("XYzKZap V1 deployed to:", xYzKZap.address);
 };
 
 main()
