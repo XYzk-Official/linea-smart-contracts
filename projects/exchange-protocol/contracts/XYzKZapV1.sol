@@ -18,11 +18,11 @@ import {Babylonian} from "./libraries/Babylonian.sol";
 contract XYzKZapV1 is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
-    // Interface for Wrapped BNB (WBNB)
-    IWETH public WBNB;
+    // Interface for Wrapped XYZK (WXYZK)
+    IWETH public WXYZK;
 
     // XYzKRouter interface
-    IXYzKRouter02 public pancakeRouter;
+    IXYzKRouter02 public xyzkRouter;
 
     // Maximum integer (used for managing allowance)
     uint256 public constant MAX_INT = 2**256 - 1;
@@ -34,10 +34,10 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
     uint256 public maxZapReverseRatio;
 
     // Address XYzKRouter
-    address private pancakeRouterAddress;
+    address private xyzkRouterAddress;
 
-    // Address Wrapped BNB (WBNB)
-    address private WBNBAddress;
+    // Address Wrapped XYZK (WXYZK)
+    address private WXYZKAddress;
 
     // Owner recovers token
     event AdminTokenRecovery(address indexed tokenAddress, uint256 amountTokens);
@@ -45,7 +45,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
     // Owner changes the maxZapReverseRatio
     event NewMaxZapReverseRatio(uint256 maxZapReverseRatio);
 
-    // tokenToZap = 0x00 address if BNB
+    // tokenToZap = 0x00 address if XYZK
     event ZapIn(
         address indexed tokenToZap,
         address indexed lpToken,
@@ -54,7 +54,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
         address indexed user
     );
 
-    // token0ToZap = 0x00 address if BNB
+    // token0ToZap = 0x00 address if XYZK
     event ZapInRebalancing(
         address indexed token0ToZap,
         address indexed token1ToZap,
@@ -65,7 +65,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
         address indexed user
     );
 
-    // tokenToReceive = 0x00 address if BNB
+    // tokenToReceive = 0x00 address if XYZK
     event ZapOut(
         address indexed lpToken,
         address indexed tokenToReceive,
@@ -75,40 +75,40 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
     );
 
     /*
-     * @notice Fallback for WBNB
+     * @notice Fallback for WXYZK
      */
     receive() external payable {
-        assert(msg.sender == WBNBAddress);
+        assert(msg.sender == WXYZKAddress);
     }
 
     /*
      * @notice Constructor
-     * @param _WBNBAddress: address of the WBNB contract
-     * @param _pancakeRouter: address of the XYzKRouter
+     * @param _WXYZKAddress: address of the WXYZK contract
+     * @param _xyzkRouter: address of the XYzKRouter
      * @param _maxZapReverseRatio: maximum zap ratio
      */
     constructor(
-        address _WBNBAddress,
-        address _pancakeRouter,
+        address _WXYZKAddress,
+        address _xyzkRouter,
         uint256 _maxZapReverseRatio
     ) {
-        WBNBAddress = _WBNBAddress;
-        WBNB = IWETH(_WBNBAddress);
-        pancakeRouterAddress = _pancakeRouter;
-        pancakeRouter = IXYzKRouter02(_pancakeRouter);
+        WXYZKAddress = _WXYZKAddress;
+        WXYZK = IWETH(_WXYZKAddress);
+        xyzkRouterAddress = _xyzkRouter;
+        xyzkRouter = IXYzKRouter02(_xyzkRouter);
         maxZapReverseRatio = _maxZapReverseRatio;
     }
 
     /*
-     * @notice Zap BNB in a WBNB pool (e.g. WBNB/token)
-     * @param _lpToken: LP token address (e.g. CAKE/BNB)
-     * @param _tokenAmountOutMin: minimum token amount (e.g. CAKE) to receive in the intermediary swap (e.g. BNB --> CAKE)
+     * @notice Zap XYZK in a WXYZK pool (e.g. WXYZK/token)
+     * @param _lpToken: LP token address (e.g. CAKE/XYZK)
+     * @param _tokenAmountOutMin: minimum token amount (e.g. CAKE) to receive in the intermediary swap (e.g. XYZK --> CAKE)
      */
-    function zapInBNB(address _lpToken, uint256 _tokenAmountOutMin) external payable nonReentrant {
-        WBNB.deposit{value: msg.value}();
+    function zapInXYZK(address _lpToken, uint256 _tokenAmountOutMin) external payable nonReentrant {
+        WXYZK.deposit{value: msg.value}();
 
         // Call zap function
-        uint256 lpTokenAmountTransferred = _zapIn(WBNBAddress, msg.value, _lpToken, _tokenAmountOutMin);
+        uint256 lpTokenAmountTransferred = _zapIn(WXYZKAddress, msg.value, _lpToken, _tokenAmountOutMin);
 
         // Emit event
         emit ZapIn(
@@ -193,7 +193,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
     }
 
     /*
-     * @notice Zap 1 token and BNB, rebalance them to 50-50, before adding them to LP
+     * @notice Zap 1 token and XYZK, rebalance them to 50-50, before adding them to LP
      * @param _token1ToZap: address of token1 to zap
      * @param _token1AmountIn: amount of token1 to zap
      * @param _lpToken: LP token address
@@ -201,7 +201,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
      * @param _tokenAmountOutMin: minimum token to receive in the intermediary swap
      * @param _isToken0Sold: whether token0 is expected to be sold (if false, sell token1)
      */
-    function zapInBNBRebalancing(
+    function zapInXYZKRebalancing(
         address _token1ToZap,
         uint256 _token1AmountIn,
         address _lpToken,
@@ -209,13 +209,13 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
         uint256 _tokenAmountOutMin,
         bool _isToken0Sold
     ) external payable nonReentrant {
-        WBNB.deposit{value: msg.value}();
+        WXYZK.deposit{value: msg.value}();
 
         IERC20(_token1ToZap).safeTransferFrom(address(msg.sender), address(this), _token1AmountIn);
 
         // Call zapIn function
         uint256 lpTokenAmountTransferred = _zapInRebalancing(
-            WBNBAddress,
+            WXYZKAddress,
             _token1ToZap,
             msg.value,
             _token1AmountIn,
@@ -238,12 +238,12 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
     }
 
     /*
-     * @notice Zap a LP token out to receive BNB
-     * @param _lpToken: LP token address (e.g. CAKE/WBNB)
+     * @notice Zap a LP token out to receive XYZK
+     * @param _lpToken: LP token address (e.g. CAKE/WXYZK)
      * @param _lpTokenAmount: amount of LP tokens to zap out
-     * @param _tokenAmountOutMin: minimum amount to receive (in BNB/WBNB) in the intermediary swap (e.g. CAKE --> BNB)
+     * @param _tokenAmountOutMin: minimum amount to receive (in XYZK/WXYZK) in the intermediary swap (e.g. CAKE --> XYZK)
      */
-    function zapOutBNB(
+    function zapOutXYZK(
         address _lpToken,
         uint256 _lpTokenAmount,
         uint256 _tokenAmountOutMin
@@ -252,14 +252,14 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
         IERC20(_lpToken).safeTransferFrom(address(msg.sender), address(_lpToken), _lpTokenAmount);
 
         // Call zapOut
-        uint256 tokenAmountToTransfer = _zapOut(_lpToken, WBNBAddress, _tokenAmountOutMin);
+        uint256 tokenAmountToTransfer = _zapOut(_lpToken, WXYZKAddress, _tokenAmountOutMin);
 
-        // Unwrap BNB
-        WBNB.withdraw(tokenAmountToTransfer);
+        // Unwrap XYZK
+        WXYZK.withdraw(tokenAmountToTransfer);
 
-        // Transfer BNB to the msg.sender
+        // Transfer XYZK to the msg.sender
         (bool success, ) = msg.sender.call{value: tokenAmountToTransfer}(new bytes(0));
-        require(success, "BNB: transfer fail");
+        require(success, "XYZK: transfer fail");
 
         // Emit event
         emit ZapOut(
@@ -317,7 +317,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
 
     /*
      * @notice View the details for single zap
-     * @dev Use WBNB for _tokenToZap (if BNB is the input)
+     * @dev Use WXYZK for _tokenToZap (if XYZK is the input)
      * @param _tokenToZap: address of the token to zap
      * @param _tokenAmountIn: amount of token to zap inputed
      * @param _lpToken: address of the LP token
@@ -349,11 +349,11 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
         if (token0 == _tokenToZap) {
             swapTokenOut = token1;
             swapAmountIn = _calculateAmountToSwap(_tokenAmountIn, reserveA, reserveB);
-            swapAmountOut = pancakeRouter.getAmountOut(swapAmountIn, reserveA, reserveB);
+            swapAmountOut = xyzkRouter.getAmountOut(swapAmountIn, reserveA, reserveB);
         } else {
             swapTokenOut = token0;
             swapAmountIn = _calculateAmountToSwap(_tokenAmountIn, reserveB, reserveA);
-            swapAmountOut = pancakeRouter.getAmountOut(swapAmountIn, reserveB, reserveA);
+            swapAmountOut = xyzkRouter.getAmountOut(swapAmountIn, reserveB, reserveA);
         }
 
         return (swapAmountIn, swapAmountOut, swapTokenOut);
@@ -361,7 +361,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
 
     /*
      * @notice View the details for a rebalancing zap
-     * @dev Use WBNB for _token0ToZap (if BNB is the input)
+     * @dev Use WXYZK for _token0ToZap (if XYZK is the input)
      * @param _token0ToZap: address of the token0 to zap
      * @param _token1ToZap: address of the token0 to zap
      * @param _token0AmountIn: amount for token0 to zap
@@ -414,9 +414,9 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
 
             // Calculate the amount expected to be received in the intermediary swap
             if (sellToken0) {
-                swapAmountOut = pancakeRouter.getAmountOut(swapAmountIn, reserveA, reserveB);
+                swapAmountOut = xyzkRouter.getAmountOut(swapAmountIn, reserveA, reserveB);
             } else {
-                swapAmountOut = pancakeRouter.getAmountOut(swapAmountIn, reserveB, reserveA);
+                swapAmountOut = xyzkRouter.getAmountOut(swapAmountIn, reserveB, reserveA);
             }
         } else {
             sellToken0 = (_token0AmountIn * reserveA > _token1AmountIn * reserveB) ? true : false;
@@ -431,9 +431,9 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
 
             // Calculate the amount expected to be received in the intermediary swap
             if (sellToken0) {
-                swapAmountOut = pancakeRouter.getAmountOut(swapAmountIn, reserveB, reserveA);
+                swapAmountOut = xyzkRouter.getAmountOut(swapAmountIn, reserveB, reserveA);
             } else {
-                swapAmountOut = pancakeRouter.getAmountOut(swapAmountIn, reserveA, reserveB);
+                swapAmountOut = xyzkRouter.getAmountOut(swapAmountIn, reserveA, reserveB);
             }
         }
 
@@ -442,7 +442,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
 
     /*
      * @notice View the details for single zap
-     * @dev Use WBNB for _tokenToReceive (if BNB is the asset to be received)
+     * @dev Use WXYZK for _tokenToReceive (if XYZK is the asset to be received)
      * @param _lpToken: address of the LP token to zap out
      * @param _lpTokenAmount: amount of LP token to zap out
      * @param _tokenToReceive: token address to receive
@@ -476,7 +476,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
             uint256 tokenAmountIn = (_lpTokenAmount * reserveA) / IXYzKPair(_lpToken).totalSupply();
 
             swapAmountIn = _calculateAmountToSwap(tokenAmountIn, reserveA, reserveB);
-            swapAmountOut = pancakeRouter.getAmountOut(swapAmountIn, reserveA, reserveB);
+            swapAmountOut = xyzkRouter.getAmountOut(swapAmountIn, reserveA, reserveB);
 
             swapTokenOut = token0;
         } else {
@@ -484,7 +484,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
             uint256 tokenAmountIn = (_lpTokenAmount * reserveB) / IXYzKPair(_lpToken).totalSupply();
 
             swapAmountIn = _calculateAmountToSwap(tokenAmountIn, reserveB, reserveA);
-            swapAmountOut = pancakeRouter.getAmountOut(swapAmountIn, reserveB, reserveA);
+            swapAmountOut = xyzkRouter.getAmountOut(swapAmountIn, reserveB, reserveA);
 
             swapTokenOut = token1;
         }
@@ -539,7 +539,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
         // Approve token to zap if necessary
         _approveTokenIfNeeded(_tokenToZap);
 
-        uint256[] memory swapedAmounts = pancakeRouter.swapExactTokensForTokens(
+        uint256[] memory swapedAmounts = xyzkRouter.swapExactTokensForTokens(
             swapAmountIn,
             _tokenAmountOutMin,
             path,
@@ -555,7 +555,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
         }
 
         // Add liquidity and retrieve the amount of LP received by the sender
-        (, , lpTokenReceived) = pancakeRouter.addLiquidity(
+        (, , lpTokenReceived) = xyzkRouter.addLiquidity(
             path[0],
             path[1],
             _tokenAmountIn - swapedAmounts[0],
@@ -648,7 +648,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
         }
 
         // Execute the swap and retrieve quantity received
-        uint256[] memory swapedAmounts = pancakeRouter.swapExactTokensForTokens(
+        uint256[] memory swapedAmounts = xyzkRouter.swapExactTokensForTokens(
             swapAmountIn,
             _tokenAmountOutMin,
             path,
@@ -660,7 +660,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
         if (_isToken0Sold) {
             _approveTokenIfNeeded(_token1ToZap);
 
-            (, , lpTokenReceived) = pancakeRouter.addLiquidity(
+            (, , lpTokenReceived) = xyzkRouter.addLiquidity(
                 path[0],
                 path[1],
                 (_token0AmountIn - swapedAmounts[0]),
@@ -672,7 +672,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
             );
         } else {
             _approveTokenIfNeeded(_token0ToZap);
-            (, , lpTokenReceived) = pancakeRouter.addLiquidity(
+            (, , lpTokenReceived) = xyzkRouter.addLiquidity(
                 path[0],
                 path[1],
                 (_token1AmountIn - swapedAmounts[0]),
@@ -729,7 +729,7 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
         }
 
         // Swap tokens
-        pancakeRouter.swapExactTokensForTokens(swapAmountIn, _tokenAmountOutMin, path, address(this), block.timestamp);
+        xyzkRouter.swapExactTokensForTokens(swapAmountIn, _tokenAmountOutMin, path, address(this), block.timestamp);
 
         // Return full balance for the token to receive by the sender
         return IERC20(_tokenToReceive).balanceOf(address(this));
@@ -740,9 +740,9 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
      * @param _token: token address
      */
     function _approveTokenIfNeeded(address _token) private {
-        if (IERC20(_token).allowance(address(this), pancakeRouterAddress) < 1e24) {
+        if (IERC20(_token).allowance(address(this), xyzkRouterAddress) < 1e24) {
             // Re-approve
-            IERC20(_token).safeApprove(pancakeRouterAddress, MAX_INT);
+            IERC20(_token).safeApprove(xyzkRouterAddress, MAX_INT);
         }
     }
 
@@ -759,8 +759,8 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
         uint256 _reserve1
     ) private view returns (uint256 amountToSwap) {
         uint256 halfToken0Amount = _token0AmountIn / 2;
-        uint256 nominator = pancakeRouter.getAmountOut(halfToken0Amount, _reserve0, _reserve1);
-        uint256 denominator = pancakeRouter.quote(
+        uint256 nominator = xyzkRouter.getAmountOut(halfToken0Amount, _reserve0, _reserve1);
+        uint256 denominator = xyzkRouter.quote(
             halfToken0Amount,
             _reserve0 + halfToken0Amount,
             _reserve1 - nominator
@@ -796,8 +796,8 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
 
         if (sellToken0) {
             uint256 token0AmountToSell = (_token0AmountIn - (_token1AmountIn * _reserve0) / _reserve1) / 2;
-            uint256 nominator = pancakeRouter.getAmountOut(token0AmountToSell, _reserve0, _reserve1);
-            uint256 denominator = pancakeRouter.quote(
+            uint256 nominator = xyzkRouter.getAmountOut(token0AmountToSell, _reserve0, _reserve1);
+            uint256 denominator = xyzkRouter.quote(
                 token0AmountToSell,
                 _reserve0 + token0AmountToSell,
                 _reserve1 - nominator
@@ -815,9 +815,9 @@ contract XYzKZapV1 is Ownable, ReentrancyGuard {
                 Babylonian.sqrt((token0AmountToSell * token0AmountToSell * nominator) / denominator);
         } else {
             uint256 token1AmountToSell = (_token1AmountIn - (_token0AmountIn * _reserve1) / _reserve0) / 2;
-            uint256 nominator = pancakeRouter.getAmountOut(token1AmountToSell, _reserve1, _reserve0);
+            uint256 nominator = xyzkRouter.getAmountOut(token1AmountToSell, _reserve1, _reserve0);
 
-            uint256 denominator = pancakeRouter.quote(
+            uint256 denominator = xyzkRouter.quote(
                 token1AmountToSell,
                 _reserve1 + token1AmountToSell,
                 _reserve0 - nominator

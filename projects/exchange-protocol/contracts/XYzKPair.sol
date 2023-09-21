@@ -2,7 +2,7 @@
 pragma solidity =0.5.16;
 
 import './interfaces/IXYzKPair.sol';
-import './XYzKERC20.sol';
+import './XYzKLPERC20.sol';
 import './libraries/Math.sol';
 import './libraries/UQ112x112.sol';
 import './interfaces/IERC20.sol';

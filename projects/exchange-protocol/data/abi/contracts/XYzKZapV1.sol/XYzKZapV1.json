@@ -3,12 +3,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_WBNBAddress",
+        "name": "_WXYZKAddress",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_pancakeRouter",
+        "name": "_xyzkRouter",
         "type": "address"
       },
       {
@@ -222,7 +222,7 @@
   },
   {
     "inputs": [],
-    "name": "WBNB",
+    "name": "WXYZK",
     "outputs": [
       {
         "internalType": "contract IWETH",
@@ -387,19 +387,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "pancakeRouter",
-    "outputs": [
-      {
-        "internalType": "contract IXYzKRouter02",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -451,59 +438,16 @@
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "xyzkRouter",
+    "outputs": [
       {
-        "internalType": "address",
-        "name": "_lpToken",
+        "internalType": "contract IXYzKRouter02",
+        "name": "",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_tokenAmountOutMin",
-        "type": "uint256"
       }
     ],
-    "name": "zapInBNB",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_token1ToZap",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_token1AmountIn",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_lpToken",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_tokenAmountInMax",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_tokenAmountOutMin",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "_isToken0Sold",
-        "type": "bool"
-      }
-    ],
-    "name": "zapInBNBRebalancing",
-    "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -591,18 +535,51 @@
       },
       {
         "internalType": "uint256",
-        "name": "_lpTokenAmount",
+        "name": "_tokenAmountOutMin",
+        "type": "uint256"
+      }
+    ],
+    "name": "zapInXYZK",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_token1ToZap",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_token1AmountIn",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_lpToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tokenAmountInMax",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
         "name": "_tokenAmountOutMin",
         "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isToken0Sold",
+        "type": "bool"
       }
     ],
-    "name": "zapOutBNB",
+    "name": "zapInXYZKRebalancing",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -629,6 +606,29 @@
       }
     ],
     "name": "zapOutToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_lpToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_lpTokenAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_tokenAmountOutMin",
+        "type": "uint256"
+      }
+    ],
+    "name": "zapOutXYZK",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
