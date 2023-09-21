@@ -7,8 +7,12 @@ export default {
     mainnet: "50", // 0.5%
     testnet: "50", // 0.5%
   },
-  WBNB: {
+  WXYZK: {
     mainnet: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
-    testnet: "0x094616F0BdFB0b526bD735Bf66Eca0Ad254ca81F",
-  },
+    testnet: "0xB5e367b6108C2528BBFC8a751772637BFc62de12",
+	},
+	XYzKFactory: {
+		mainnet: "0x0000000000000000000000000000000000000000",
+    testnet: "0xe39f1bb41166cd6F2E802C759543e1E311DCa02F",
+	}
 };
