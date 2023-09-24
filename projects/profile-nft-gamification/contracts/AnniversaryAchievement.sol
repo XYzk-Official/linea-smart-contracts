@@ -2,14 +2,14 @@
 pragma solidity ^0.6.12;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
-import {BeraSleepProfile} from "./BeraSleepProfile.sol";
+import {XYzKProfile} from "./XYzKProfile.sol";
 
 /**
  * @title AnniversaryAchievement.
  * @notice It is a contract to distribute points for 1st anniversary.
  */
 contract AnniversaryAchievement is Ownable {
-    BeraSleepProfile public beraSleepProfile;
+    XYzKProfile public xYzKProfile;
 
     uint256 public campaignId;
     uint256 public numberPoints;
@@ -25,20 +25,20 @@ contract AnniversaryAchievement is Ownable {
 
     /**
      * @notice Constructor
-     * @param _beraSleepProfile: Pancake Profile
+     * @param _xYzKProfile: Pancake Profile
      * @param _numberPoints: number of points to give
      * @param _thresholdPoints: number of points required to claim
      * @param _campaignId: campaign id
      * @param _endBlock: end block for claiming
      */
     constructor(
-        address _beraSleepProfile,
+        address _xYzKProfile,
         uint256 _numberPoints,
         uint256 _thresholdPoints,
         uint256 _campaignId,
         uint256 _endBlock
     ) public {
-        beraSleepProfile = BeraSleepProfile(_beraSleepProfile);
+        xYzKProfile = XYzKProfile(_xYzKProfile);
         numberPoints = _numberPoints;
         thresholdPoints = _thresholdPoints;
         campaignId = _campaignId;
@@ -54,7 +54,7 @@ contract AnniversaryAchievement is Ownable {
 
         hasClaimed[msg.sender] = true;
 
-        beraSleepProfile.increaseUserPoints(msg.sender, numberPoints, campaignId);
+        xYzKProfile.increaseUserPoints(msg.sender, numberPoints, campaignId);
     }
 
     /**
@@ -98,11 +98,11 @@ contract AnniversaryAchievement is Ownable {
      * @param _user: user address
      */
     function canClaim(address _user) public view returns (bool) {
-        if (!beraSleepProfile.getUserStatus(_user)) {
+        if (!xYzKProfile.getUserStatus(_user)) {
             return false;
         }
 
-        (, uint256 numberUserPoints, , , , ) = beraSleepProfile.getUserProfile(_user);
+        (, uint256 numberUserPoints, , , , ) = xYzKProfile.getUserProfile(_user);
 
         return (!hasClaimed[_user]) && (block.number < endBlock) && (numberUserPoints >= thresholdPoints);
     }

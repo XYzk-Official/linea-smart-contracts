@@ -4,21 +4,21 @@ pragma solidity ^0.6.12;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
-import "berasleep-vault/contracts/BeraSleepVault.sol";
+import "xyzk-vault/contracts/XYzKVault.sol";
 
 import "./BunnyMintingStation.sol";
-import "./BeraSleepProfile.sol";
+import "./XYzKProfile.sol";
 
 /**
- * @title BunnySpecialBeraSleepVault.
+ * @title BunnySpecialXYzKVault.
  * @notice It is a contract for users to mint Cake Vault collectible.
  */
-contract BunnySpecialBeraSleepVault is Ownable {
+contract BunnySpecialXYzKVault is Ownable {
     using SafeMath for uint256;
 
     BunnyMintingStation public bunnyMintingStation;
-    BeraSleepVault public beraSleepVault;
-    BeraSleepProfile public beraSleepProfile;
+    XYzKVault public xYzKVault;
+    XYzKProfile public xYzKProfile;
 
     uint8 public constant bunnyId = 16;
 
@@ -26,7 +26,7 @@ contract BunnySpecialBeraSleepVault is Ownable {
     uint256 public endBlock;
     uint256 public thresholdTimestamp;
 
-    // BeraSleep Profile related.
+    // XYzK Profile related.
     uint256 public numberPoints;
     uint256 public campaignId;
 
@@ -42,18 +42,18 @@ contract BunnySpecialBeraSleepVault is Ownable {
     event NewThresholdTimestamp(uint256 thresholdTimestamp);
 
     constructor(
-        address _beraSleepVault,
+        address _xYzKVault,
         address _bunnyMintingStation,
-        address _beraSleepProfile,
+        address _xYzKProfile,
         uint256 _endBlock,
         uint256 _thresholdTimestamp,
         uint256 _numberPoints,
         uint256 _campaignId,
         string memory _tokenURI
     ) public {
-        beraSleepVault = BeraSleepVault(_beraSleepVault);
+        xYzKVault = XYzKVault(_xYzKVault);
         bunnyMintingStation = BunnyMintingStation(_bunnyMintingStation);
-        beraSleepProfile = BeraSleepProfile(_beraSleepProfile);
+        xYzKProfile = XYzKProfile(_xYzKProfile);
         endBlock = _endBlock;
         thresholdTimestamp = _thresholdTimestamp;
         numberPoints = _numberPoints;
@@ -72,7 +72,7 @@ contract BunnySpecialBeraSleepVault is Ownable {
         require(!hasClaimed[msg.sender], "ERR_HAS_CLAIMED");
 
         bool isUserActive;
-        (, , , , , isUserActive) = beraSleepProfile.getUserProfile(msg.sender);
+        (, , , , , isUserActive) = xYzKProfile.getUserProfile(msg.sender);
 
         require(isUserActive, "ERR_USER_NOT_ACTIVE");
 
@@ -87,14 +87,14 @@ contract BunnySpecialBeraSleepVault is Ownable {
         // Mint collectible and send it to the user.
         uint256 tokenId = bunnyMintingStation.mintCollectible(msg.sender, tokenURI, bunnyId);
 
-        // Increase point on BeraSleep profile, for a given campaignId.
-        beraSleepProfile.increaseUserPoints(msg.sender, numberPoints, campaignId);
+        // Increase point on XYzK profile, for a given campaignId.
+        xYzKProfile.increaseUserPoints(msg.sender, numberPoints, campaignId);
 
         emit BunnyMint(msg.sender, tokenId, bunnyId);
     }
 
     /**
-     * @notice Change the campaignId for BeraSleep Profile.
+     * @notice Change the campaignId for XYzK Profile.
      * @dev Only callable by owner.
      */
     function changeCampaignId(uint256 _campaignId) external onlyOwner {
@@ -114,7 +114,7 @@ contract BunnySpecialBeraSleepVault is Ownable {
     }
 
     /**
-     * @notice Change the number of points for BeraSleep Profile.
+     * @notice Change the number of points for XYzK Profile.
      * @dev Only callable by owner.
      */
     function changeNumberPoints(uint256 _numberPoints) external onlyOwner {
@@ -147,11 +147,11 @@ contract BunnySpecialBeraSleepVault is Ownable {
         if (hasClaimed[_userAddress]) {
             return false;
         } else {
-            if (!beraSleepProfile.getUserStatus(_userAddress)) {
+            if (!xYzKProfile.getUserStatus(_userAddress)) {
                 return false;
             } else {
                 uint256 lastDepositedTime;
-                (, lastDepositedTime, , ) = beraSleepVault.userInfo(_userAddress);
+                (, lastDepositedTime, , ) = xYzKVault.userInfo(_userAddress);
 
                 if (lastDepositedTime != 0) {
                     if (lastDepositedTime < thresholdTimestamp) {

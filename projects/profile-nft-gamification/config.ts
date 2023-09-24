@@ -33,21 +33,21 @@ export default {
     mainnet: "0x0000000000000000000000000000000000000000",
     testnet: "0x255F3F09cB7F3584901D2cB8BA6FfE91E4a5dBca",
   },
-  BeraSleepToken: {
+  XYzKToken: {
     mainnet: "0x0000000000000000000000000000000000000000",
-    testnet: "0xC938173CccA0f3C917A0dC799B3dbEF89626fE2B",
+    testnet: "0x707dc1041dc702a83F7a0af57dDe1a3cdAC9643e",
   },
   LazioToken: {
     mainnet: "0x77d547256A2cD95F32F67aE0313E450Ac200648d",
-    testnet: "0xa35062141fa33bca92ce69fed37d0e8908868aae",
+    testnet: "0x707dc1041dc702a83F7a0af57dDe1a3cdAC9643e",
   },
   PortoToken: {
     mainnet: "0x49f2145d6366099e13B10FbF80646C0F377eE7f6",
-    testnet: "0xa35062141fa33bca92ce69fed37d0e8908868aae",
+    testnet: "0x707dc1041dc702a83F7a0af57dDe1a3cdAC9643e",
   },
   SantosToken: {
     mainnet: "0xA64455a4553C9034236734FadDAddbb64aCE4Cc7",
-    testnet: "0xa35062141fa33bca92ce69fed37d0e8908868aae",
+    testnet: "0x707dc1041dc702a83F7a0af57dDe1a3cdAC9643e",
   },
   MoboxToken: {
     mainnet: "0x3203c9E46cA618C8C1cE5dC67e7e9D75f5da2377",

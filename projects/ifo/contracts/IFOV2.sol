@@ -7,14 +7,14 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
-import "profile-nft-gamification/contracts/BeraSleepProfile.sol";
+import "profile-nft-gamification/contracts/XYzKProfile.sol";
 
 import "./interfaces/IIFOV2.sol";
 
 /**
  * @title IFOV2
  * @notice It is an upgrade of the original IFO model with 2 pools and
- * other BeraSleepProfile requirements.
+ * other XYzKProfile requirements.
  */
 contract IFOV2 is IIFOV2, ReentrancyGuard, Ownable {
     using SafeMath for uint256;
@@ -26,8 +26,8 @@ contract IFOV2 is IIFOV2, ReentrancyGuard, Ownable {
     // The offering token
     IERC20 public offeringToken;
 
-    // BeraSleepProfile
-    BeraSleepProfile public beraSleepProfile;
+    // XYzKProfile
+    XYzKProfile public xYzKProfile;
 
     // Number of pools
     uint8 public constant numberPools = 2;
@@ -105,7 +105,7 @@ contract IFOV2 is IIFOV2, ReentrancyGuard, Ownable {
      * @dev It can only be called once.
      * @param _lpToken: the LP token used
      * @param _offeringToken: the token that is offered for the IFO
-     * @param _beraSleepProfileAddress: the address of the BeraSleepProfile
+     * @param _xYzKProfileAddress: the address of the XYzKProfile
      * @param _startBlock: the start block for the IFO
      * @param _endBlock: the end block for the IFO
      * @param _adminAddress: the admin address for handling tokens
@@ -113,7 +113,7 @@ contract IFOV2 is IIFOV2, ReentrancyGuard, Ownable {
     constructor(
         address _lpToken,
         address _offeringToken,
-        address _beraSleepProfileAddress,
+        address _xYzKProfileAddress,
         uint256 _startBlock,
         uint256 _endBlock,
         address _adminAddress
@@ -124,7 +124,7 @@ contract IFOV2 is IIFOV2, ReentrancyGuard, Ownable {
 
         lpToken = IERC20(_lpToken);
         offeringToken = IERC20(_offeringToken);
-        beraSleepProfile = BeraSleepProfile(_beraSleepProfileAddress);
+        xYzKProfile = XYzKProfile(_xYzKProfileAddress);
         startBlock = _startBlock;
         endBlock = _endBlock;
         transferOwnership(_adminAddress);
@@ -137,7 +137,7 @@ contract IFOV2 is IIFOV2, ReentrancyGuard, Ownable {
      */
     function depositPool(uint256 _amount, uint8 _pid) external override nonReentrant notContract {
         // Checks whether the user has an active profile
-        require(beraSleepProfile.getUserStatus(msg.sender), "Deposit: Must have an active profile");
+        require(xYzKProfile.getUserStatus(msg.sender), "Deposit: Must have an active profile");
 
         // Checks whether the pool id is valid
         require(_pid < numberPools, "Deposit: Non valid pool id");
@@ -444,7 +444,7 @@ contract IFOV2 is IIFOV2, ReentrancyGuard, Ownable {
             if (sumPools > thresholdPoints) {
                 _hasClaimedPoints[_user] = true;
                 // Increase user points
-                beraSleepProfile.increaseUserPoints(msg.sender, numberPoints, campaignId);
+                xYzKProfile.increaseUserPoints(msg.sender, numberPoints, campaignId);
             }
         }
     }

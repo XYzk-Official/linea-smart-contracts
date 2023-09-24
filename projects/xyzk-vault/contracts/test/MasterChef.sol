@@ -74,13 +74,7 @@ contract MasterChef is Ownable {
     event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
     event EmergencyWithdraw(address indexed user, uint256 indexed pid, uint256 amount);
 
-    constructor(
-        XYzKToken _xYzK,
-        SyrupBar _syrup,
-        address _devaddr,
-        uint256 _xYzKPerBlock,
-        uint256 _startBlock
-    ) public {
+    constructor(XYzKToken _xYzK, SyrupBar _syrup, address _devaddr, uint256 _xYzKPerBlock, uint256 _startBlock) public {
         xYzK = _xYzK;
         syrup = _syrup;
         devaddr = _devaddr;
@@ -88,9 +82,7 @@ contract MasterChef is Ownable {
         startBlock = _startBlock;
 
         // staking pool
-        poolInfo.push(
-            PoolInfo({lpToken: _xYzK, allocPoint: 1000, lastRewardBlock: startBlock, accXYzKPerShare: 0})
-        );
+        poolInfo.push(PoolInfo({lpToken: _xYzK, allocPoint: 1000, lastRewardBlock: startBlock, accXYzKPerShare: 0}));
 
         totalAllocPoint = 1000;
     }
@@ -112,12 +104,7 @@ contract MasterChef is Ownable {
         uint256 lastRewardBlock = block.number > startBlock ? block.number : startBlock;
         totalAllocPoint = totalAllocPoint.add(_allocPoint);
         poolInfo.push(
-            PoolInfo({
-                lpToken: _lpToken,
-                allocPoint: _allocPoint,
-                lastRewardBlock: lastRewardBlock,
-                accXYzKPerShare: 0
-            })
+            PoolInfo({lpToken: _lpToken, allocPoint: _allocPoint, lastRewardBlock: lastRewardBlock, accXYzKPerShare: 0})
         );
         updateStakingPool();
     }

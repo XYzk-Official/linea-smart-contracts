@@ -3,14 +3,14 @@ pragma solidity ^0.6.12;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./utils/IFO.sol";
-import "./interfaces/IBeraSleepProfile.sol";
+import "./interfaces/IXYzKProfile.sol";
 
 /** @title PointCenterIFO.
  * @notice It is a contract for users to collect points
  * for IFOs they participated in.
  */
 contract PointCenterIFO is Ownable {
-    IBeraSleepProfile beraSleepProfile;
+    IXYzKProfile xYzKProfile;
 
     uint256 public maxViewLength;
 
@@ -30,8 +30,8 @@ contract PointCenterIFO is Ownable {
         uint256 numberPoints;
     }
 
-    constructor(address _beraSleepProfileAddress, uint256 _maxViewLength) public {
-        beraSleepProfile = IBeraSleepProfile(_beraSleepProfileAddress);
+    constructor(address _xYzKProfileAddress, uint256 _maxViewLength) public {
+        xYzKProfile = IXYzKProfile(_xYzKProfileAddress);
         maxViewLength = _maxViewLength;
     }
 
@@ -45,7 +45,7 @@ contract PointCenterIFO is Ownable {
         require(!_users[senderAddress][_contractAddress], "has claimed for this IFO");
 
         // 3. Check if he is active
-        bool isUserActive = beraSleepProfile.getUserStatus(senderAddress);
+        bool isUserActive = xYzKProfile.getUserStatus(senderAddress);
         require(isUserActive, "not active");
 
         // 4. Check if he can claim
@@ -64,7 +64,7 @@ contract PointCenterIFO is Ownable {
         _users[senderAddress][_contractAddress] = true;
 
         // 6. Increase user points of sender
-        beraSleepProfile.increaseUserPoints(
+        xYzKProfile.increaseUserPoints(
             senderAddress,
             ifos[_contractAddress].numberPoints,
             ifos[_contractAddress].campaignId

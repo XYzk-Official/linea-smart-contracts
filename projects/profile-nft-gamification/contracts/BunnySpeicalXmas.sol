@@ -3,17 +3,17 @@ pragma solidity ^0.6.12;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
-import {IBeraSleepProfile} from "./interfaces/IBeraSleepProfile.sol";
+import {IXYzKProfile} from "./interfaces/IXYzKProfile.sol";
 import "./BunnyMintingStation.sol";
 
 contract BunnySpecialXmas is Ownable {
     BunnyMintingStation public immutable bunnyMintingStation;
-    IBeraSleepProfile public immutable beraSleepProfile;
+    IXYzKProfile public immutable xYzKProfile;
 
     uint256 public endBlock; // End of the distribution
 
-    // BeraSleep Profile points threshold
-    uint256 public beraSleepProfileThresholdPoints;
+    // XYzK Profile points threshold
+    uint256 public xYzKProfileThresholdPoints;
 
     uint8 public immutable nftId; // Nft can be minted
     string public tokenURI; // Nft token URI
@@ -22,27 +22,27 @@ contract BunnySpecialXmas is Ownable {
 
     event BunnyMint(address indexed to, uint256 indexed tokenId, uint8 indexed bunnyId);
     event NewEndBlock(uint256 endBlock);
-    event NewBeraSleepProfileThresholdPoints(uint256 thresholdPoints);
+    event NewXYzKProfileThresholdPoints(uint256 thresholdPoints);
     event NewTokenURI(string tokenURI);
 
     /**
      * @notice It initializes the contract.
      * @param _bunnyMintingStationAddress: BunnyMintingStation address
-     * @param _beraSleepProfileAddress: BeraSleepProfile address
-     * @param _beraSleepProfileThresholdPoints: User points threshold for mint NFT
+     * @param _xYzKProfileAddress: XYzKProfile address
+     * @param _xYzKProfileThresholdPoints: User points threshold for mint NFT
      * @param _nftId: Nft can be minted
      * @param _endBlock: the end of the block
      */
     constructor(
         address _bunnyMintingStationAddress,
-        address _beraSleepProfileAddress,
-        uint256 _beraSleepProfileThresholdPoints,
+        address _xYzKProfileAddress,
+        uint256 _xYzKProfileThresholdPoints,
         uint8 _nftId,
         uint256 _endBlock
     ) public {
         bunnyMintingStation = BunnyMintingStation(_bunnyMintingStationAddress);
-        beraSleepProfile = IBeraSleepProfile(_beraSleepProfileAddress);
-        beraSleepProfileThresholdPoints = _beraSleepProfileThresholdPoints;
+        xYzKProfile = IXYzKProfile(_xYzKProfileAddress);
+        xYzKProfileThresholdPoints = _xYzKProfileThresholdPoints;
         nftId = _nftId;
         endBlock = _endBlock;
     }
@@ -61,8 +61,8 @@ contract BunnySpecialXmas is Ownable {
      * @dev Only callable by owner.
      */
     function updateThresholdPoints(uint256 _newThresholdPoints) external onlyOwner {
-        beraSleepProfileThresholdPoints = _newThresholdPoints;
-        emit NewBeraSleepProfileThresholdPoints(_newThresholdPoints);
+        xYzKProfileThresholdPoints = _newThresholdPoints;
+        emit NewXYzKProfileThresholdPoints(_newThresholdPoints);
     }
 
     /**
@@ -90,13 +90,13 @@ contract BunnySpecialXmas is Ownable {
      * @notice Check if user can claim NFT.
      */
     function canClaim(address _userAddress) public view returns (bool) {
-        (, uint256 numberUserPoints, , , , bool active) = beraSleepProfile.getUserProfile(_userAddress);
+        (, uint256 numberUserPoints, , , , bool active) = xYzKProfile.getUserProfile(_userAddress);
         // If user is able to mint this NFT
         if (
             !hasClaimed[_userAddress] &&
             block.number < endBlock &&
             active &&
-            numberUserPoints >= beraSleepProfileThresholdPoints
+            numberUserPoints >= xYzKProfileThresholdPoints
         ) {
             return true;
         }

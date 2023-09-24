@@ -3,7 +3,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_beraSleepProfileAddress",
+        "name": "_xYzKProfileAddress",
         "type": "address"
       },
       {
@@ -13,7 +13,7 @@
       },
       {
         "internalType": "address",
-        "name": "_beraSleepTokenAddress",
+        "name": "_xYzKTokenAddress",
         "type": "address"
       },
       {
@@ -165,32 +165,6 @@
     ],
     "name": "WinningTeam",
     "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "beraSleepProfile",
-    "outputs": [
-      {
-        "internalType": "contract IBeraSleepProfile",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "beraSleepToken",
-    "outputs": [
-      {
-        "internalType": "contract IBEP20",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [],
@@ -494,7 +468,7 @@
       },
       {
         "internalType": "uint256[5]",
-        "name": "_beraSleepRewards",
+        "name": "_xYzKRewards",
         "type": "uint256[5]"
       },
       {
@@ -611,7 +585,7 @@
           },
           {
             "internalType": "uint256[5]",
-            "name": "beraSleepRewards",
+            "name": "xYzKRewards",
             "type": "uint256[5]"
           },
           {
@@ -651,6 +625,32 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "xYzKProfile",
+    "outputs": [
+      {
+        "internalType": "contract IXYzKProfile",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "xYzKToken",
+    "outputs": [
+      {
+        "internalType": "contract IBEP20",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",

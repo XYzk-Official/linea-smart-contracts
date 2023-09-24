@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "bsc-library/contracts/IBEP20.sol";
 import "bsc-library/contracts/SafeBEP20.sol";
 
-import "./interfaces/IBeraSleepProfile.sol";
+import "./interfaces/IXYzKProfile.sol";
 import "./BunnyMintingStation.sol";
 
 /** @title TradingCompV1.
@@ -17,8 +17,8 @@ contract TradingCompV1 is Ownable {
     using SafeBEP20 for IBEP20;
 
     BunnyMintingStation public bunnyMintingStation;
-    IBEP20 public beraSleepToken;
-    IBeraSleepProfile public beraSleepProfile;
+    IBEP20 public xYzKToken;
+    IXYzKProfile public xYzKProfile;
 
     uint256 public constant numberTeams = 3;
 
@@ -42,7 +42,7 @@ contract TradingCompV1 is Ownable {
 
     struct CompetitionRewards {
         uint256[5] userCampaignId; // campaignId for user increase
-        uint256[5] beraSleepRewards; // BeraSleep rewards per group
+        uint256[5] xYzKRewards; // XYzK rewards per group
         uint256[5] pointUsers; // number of points per user
     }
 
@@ -61,14 +61,14 @@ contract TradingCompV1 is Ownable {
 
     /**
      * @notice It initializes the contract.
-     * @param _beraSleepProfileAddress: BeraSleepProfile address
+     * @param _xYzKProfileAddress: XYzKProfile address
      * @param _bunnyStationAddress: BunnyMintingStation address
-     * @param _beraSleepTokenAddress: the address of the CAKE token
+     * @param _xYzKTokenAddress: the address of the CAKE token
      */
-    constructor(address _beraSleepProfileAddress, address _bunnyStationAddress, address _beraSleepTokenAddress) public {
-        beraSleepProfile = IBeraSleepProfile(_beraSleepProfileAddress);
+    constructor(address _xYzKProfileAddress, address _bunnyStationAddress, address _xYzKTokenAddress) public {
+        xYzKProfile = IXYzKProfile(_xYzKProfileAddress);
         bunnyMintingStation = BunnyMintingStation(_bunnyStationAddress);
-        beraSleepToken = IBEP20(_beraSleepTokenAddress);
+        xYzKToken = IBEP20(_xYzKTokenAddress);
         currentStatus = CompetitionStatus.Registration;
     }
 
@@ -91,7 +91,7 @@ contract TradingCompV1 is Ownable {
         CompetitionRewards memory userRewards = _rewardCompetitions[userTeamId];
 
         if (userRewardGroup > 0) {
-            beraSleepToken.safeTransfer(senderAddress, userRewards.beraSleepRewards[userRewardGroup]);
+            xYzKToken.safeTransfer(senderAddress, userRewards.xYzKRewards[userRewardGroup]);
 
             if (userTeamId == winningTeamId) {
                 bunnyMintingStation.mintCollectible(senderAddress, tokenURI, bunnyId);
@@ -99,7 +99,7 @@ contract TradingCompV1 is Ownable {
         }
 
         // User collects points
-        beraSleepProfile.increaseUserPoints(
+        xYzKProfile.increaseUserPoints(
             senderAddress,
             userRewards.pointUsers[userRewardGroup],
             userRewards.userCampaignId[userRewardGroup]
@@ -108,7 +108,7 @@ contract TradingCompV1 is Ownable {
 
     /**
      * @notice It allows users to register for trading competition
-     * @dev Only callable if the user has an active BeraSleepProfile.
+     * @dev Only callable if the user has an active XYzKProfile.
      */
     function register() external {
         address senderAddress = _msgSender();
@@ -123,7 +123,7 @@ contract TradingCompV1 is Ownable {
         uint256 userTeamId;
         bool isUserActive;
 
-        (, , userTeamId, , , isUserActive) = beraSleepProfile.getUserProfile(senderAddress);
+        (, , userTeamId, , , isUserActive) = xYzKProfile.getUserProfile(senderAddress);
 
         require(isUserActive, "NOT_ACTIVE");
 
@@ -166,7 +166,7 @@ contract TradingCompV1 is Ownable {
      */
     function claimRemainder(uint256 _amount) external onlyOwner {
         require(currentStatus == CompetitionStatus.Over, "NOT_OVER");
-        beraSleepToken.safeTransfer(_msgSender(), _amount);
+        xYzKToken.safeTransfer(_msgSender(), _amount);
     }
 
     /**
@@ -174,18 +174,18 @@ contract TradingCompV1 is Ownable {
      * @dev Only callable by owner.
      * @param _teamId: the teamId
      * @param _userCampaignIds: campaignIds for each user group for teamId
-     * @param _beraSleepRewards: CAKE rewards for each user group for teamId
+     * @param _xYzKRewards: CAKE rewards for each user group for teamId
      * @param _pointRewards: point to collect for each user group for teamId
      */
     function updateTeamRewards(
         uint256 _teamId,
         uint256[5] calldata _userCampaignIds,
-        uint256[5] calldata _beraSleepRewards,
+        uint256[5] calldata _xYzKRewards,
         uint256[5] calldata _pointRewards
     ) external onlyOwner {
         require(currentStatus == CompetitionStatus.Close, "NOT_CLOSED");
         _rewardCompetitions[_teamId].userCampaignId = _userCampaignIds;
-        _rewardCompetitions[_teamId].beraSleepRewards = _beraSleepRewards;
+        _rewardCompetitions[_teamId].xYzKRewards = _xYzKRewards;
         _rewardCompetitions[_teamId].pointUsers = _pointRewards;
 
         emit TeamRewardsUpdate(_teamId);
@@ -251,7 +251,7 @@ contract TradingCompV1 is Ownable {
             uint256 userRewardGroup = userTradingStats[_userAddress].rewardGroup;
             uint256 userTeamId = userTradingStats[_userAddress].teamId;
 
-            uint256 userCakeRewards = _rewardCompetitions[userTeamId].beraSleepRewards[userRewardGroup];
+            uint256 userCakeRewards = _rewardCompetitions[userTeamId].xYzKRewards[userRewardGroup];
             uint256 userPointRewards = _rewardCompetitions[userTeamId].pointUsers[userRewardGroup];
 
             bool hasUserClaimed = userTradingStats[_userAddress].hasClaimed;

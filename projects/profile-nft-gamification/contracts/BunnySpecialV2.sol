@@ -7,7 +7,7 @@ import "bsc-library/contracts/IBEP20.sol";
 import "bsc-library/contracts/SafeBEP20.sol";
 
 import "./BunnyMintingStation.sol";
-import "./BeraSleepProfile.sol";
+import "./XYzKProfile.sol";
 
 /** @title BunnySpecialV2.
  * @notice It is a contract for users to mint exclusive Easter
@@ -18,9 +18,9 @@ contract BunnySpecialV2 is Ownable {
     using SafeMath for uint256;
 
     BunnyMintingStation public bunnyMintingStation;
-    BeraSleepProfile public beraSleepProfile;
+    XYzKProfile public xYzKProfile;
 
-    IBEP20 public beraSleepToken;
+    IBEP20 public xYzKToken;
 
     uint8 public constant previousNumberBunnyIds = 12;
 
@@ -46,14 +46,14 @@ contract BunnySpecialV2 is Ownable {
 
     constructor(
         BunnyMintingStation _bunnyMintingStation,
-        IBEP20 _beraSleepToken,
-        BeraSleepProfile _beraSleepProfile,
+        IBEP20 _xYzKToken,
+        XYzKProfile _xYzKProfile,
         uint256 _thresholdUser,
         uint256 _endBlock
     ) public {
         bunnyMintingStation = _bunnyMintingStation;
-        beraSleepToken = _beraSleepToken;
-        beraSleepProfile = _beraSleepProfile;
+        xYzKToken = _xYzKToken;
+        xYzKProfile = _xYzKProfile;
         thresholdUser = _thresholdUser;
         endBlock = _endBlock;
     }
@@ -74,7 +74,7 @@ contract BunnySpecialV2 is Ownable {
         uint256 userTeamId;
         bool isUserActive;
 
-        (userId, , userTeamId, , , isUserActive) = beraSleepProfile.getUserProfile(senderAddress);
+        (userId, , userTeamId, , , isUserActive) = xYzKProfile.getUserProfile(senderAddress);
 
         require(userId < thresholdUser, "ERR_USER_NOT_ELIGIBLE");
         require(isUserActive, "ERR_USER_NOT_ACTIVE");
@@ -131,11 +131,11 @@ contract BunnySpecialV2 is Ownable {
         if (hasClaimed[_userAddress]) {
             return false;
         } else {
-            if (!beraSleepProfile.getUserStatus(_userAddress)) {
+            if (!xYzKProfile.getUserStatus(_userAddress)) {
                 return false;
             } else {
                 uint256 userId;
-                (userId, , , , , ) = beraSleepProfile.getUserProfile(_userAddress);
+                (userId, , , , , ) = xYzKProfile.getUserProfile(_userAddress);
 
                 if (userId < thresholdUser) {
                     return true;

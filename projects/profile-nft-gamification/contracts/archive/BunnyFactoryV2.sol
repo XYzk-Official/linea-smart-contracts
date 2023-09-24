@@ -7,13 +7,13 @@ import "bsc-library/contracts/IBEP20.sol";
 
 import "bsc-library/contracts/SafeBEP20.sol";
 
-import "../BeraSleepBunnies.sol";
+import "../XYzKBunnies.sol";
 
 contract BunnyFactoryV2 is Ownable {
     using SafeMath for uint256;
     using SafeBEP20 for IBEP20;
 
-    BeraSleepBunnies public beraSleepBunnies;
+    XYzKBunnies public xYzKBunnies;
     IBEP20 public cakeToken;
 
     // end block number to get collectibles
@@ -48,14 +48,14 @@ contract BunnyFactoryV2 is Ownable {
      * is defined as totalSupplyDistributed.
      */
     constructor(
-        BeraSleepBunnies _beraSleepBunnies,
+        XYzKBunnies _xYzKBunnies,
         IBEP20 _cakeToken,
         uint256 _tokenPrice,
         string memory _ipfsHash,
         uint256 _startBlockNumber,
         uint256 _endBlockNumber
     ) public {
-        beraSleepBunnies = _beraSleepBunnies;
+        xYzKBunnies = _xYzKBunnies;
         cakeToken = _cakeToken;
         tokenPrice = _tokenPrice;
         ipfsHash = _ipfsHash;
@@ -64,7 +64,7 @@ contract BunnyFactoryV2 is Ownable {
     }
 
     /**
-     * @dev Mint NFTs from the BeraSleepBunnies contract.
+     * @dev Mint NFTs from the XYzKBunnies contract.
      * Users can specify what bunnyId they want to mint. Users can claim once.
      * There is a limit on how many are distributed. It requires CAKE balance to be > 0.
      */
@@ -88,7 +88,7 @@ contract BunnyFactoryV2 is Ownable {
 
         string memory tokenURI = bunnyIdURIs[_bunnyId];
 
-        uint256 tokenId = beraSleepBunnies.mint(address(_msgSender()), tokenURI, _bunnyId);
+        uint256 tokenId = xYzKBunnies.mint(address(_msgSender()), tokenURI, _bunnyId);
 
         emit BunnyMint(_msgSender(), tokenId, _bunnyId);
     }
@@ -98,7 +98,7 @@ contract BunnyFactoryV2 is Ownable {
      * to a new address.
      */
     function changeOwnershipNFTContract(address _newOwner) external onlyOwner {
-        beraSleepBunnies.transferOwnership(_newOwner);
+        xYzKBunnies.transferOwnership(_newOwner);
     }
 
     /**
@@ -139,11 +139,11 @@ contract BunnyFactoryV2 is Ownable {
         string calldata _bunnyId8,
         string calldata _bunnyId9
     ) external onlyOwner {
-        beraSleepBunnies.setBunnyName(5, _bunnyId5);
-        beraSleepBunnies.setBunnyName(6, _bunnyId6);
-        beraSleepBunnies.setBunnyName(7, _bunnyId7);
-        beraSleepBunnies.setBunnyName(8, _bunnyId8);
-        beraSleepBunnies.setBunnyName(9, _bunnyId9);
+        xYzKBunnies.setBunnyName(5, _bunnyId5);
+        xYzKBunnies.setBunnyName(6, _bunnyId6);
+        xYzKBunnies.setBunnyName(7, _bunnyId7);
+        xYzKBunnies.setBunnyName(8, _bunnyId8);
+        xYzKBunnies.setBunnyName(9, _bunnyId9);
     }
 
     /**

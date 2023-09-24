@@ -13,7 +13,7 @@
       },
       {
         "internalType": "address",
-        "name": "_beraSleepProfileAddress",
+        "name": "_xYzKProfileAddress",
         "type": "address"
       },
       {
@@ -216,19 +216,6 @@
     ],
     "name": "PoolParametersSet",
     "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "beraSleepProfile",
-    "outputs": [
-      {
-        "internalType": "contract BeraSleepProfile",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [],
@@ -643,6 +630,19 @@
         "internalType": "uint256[3][]",
         "name": "",
         "type": "uint256[3][]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "xYzKProfile",
+    "outputs": [
+      {
+        "internalType": "contract XYzKProfile",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",

@@ -3,7 +3,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_beraSleepProfileAddress",
+        "name": "_xYzKProfileAddress",
         "type": "address"
       },
       {

@@ -2,7 +2,7 @@
 pragma solidity 0.6.12;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "./CakeToken.sol";
+import "./XYzKToken.sol";
 
 // SyrupBar with Governance.
 contract SyrupBar is ERC20("SyrupBar Token", "SYRUP"), Ownable {
@@ -18,19 +18,19 @@ contract SyrupBar is ERC20("SyrupBar Token", "SYRUP"), Ownable {
     }
 
     // The CAKE TOKEN!
-    CakeToken public cake;
+    XYzKToken public xYzK;
 
-    constructor(CakeToken _cake) public {
-        cake = _cake;
+    constructor(XYzKToken _xYzK) public {
+        xYzK = _xYzK;
     }
 
-    // Safe cake transfer function, just in case if rounding error causes pool to not have enough CAKEs.
-    function safeCakeTransfer(address _to, uint256 _amount) public onlyOwner {
-        uint256 cakeBal = cake.balanceOf(address(this));
-        if (_amount > cakeBal) {
-            cake.transfer(_to, cakeBal);
+    // Safe xYzK transfer function, just in case if rounding error causes pool to not have enough CAKEs.
+    function safeXYzKTransfer(address _to, uint256 _amount) public onlyOwner {
+        uint256 xYzKBal = xYzK.balanceOf(address(this));
+        if (_amount > xYzKBal) {
+            xYzK.transfer(_to, xYzKBal);
         } else {
-            cake.transfer(_to, _amount);
+            xYzK.transfer(_to, _amount);
         }
     }
 

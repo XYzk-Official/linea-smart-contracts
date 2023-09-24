@@ -9,7 +9,7 @@ import './interfaces/IERC20.sol';
 import './interfaces/IXYzKFactory.sol';
 import './interfaces/IXYzKCallee.sol';
 
-contract XYzKPair is IXYzKPair, XYzKERC20 {
+contract XYzKPair is IXYzKPair, XYzKLPERC20 {
     using SafeMath  for uint;
     using UQ112x112 for uint224;
 

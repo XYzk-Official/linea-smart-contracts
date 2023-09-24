@@ -2,8 +2,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract BeraSleepBunnies",
-        "name": "_beraSleepBunnies",
+        "internalType": "contract XYzKBunnies",
+        "name": "_xYzKBunnies",
         "type": "address"
       }
     ],
@@ -106,19 +106,6 @@
         "internalType": "bytes32",
         "name": "",
         "type": "bytes32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "beraSleepBunnies",
-    "outputs": [
-      {
-        "internalType": "contract BeraSleepBunnies",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -322,6 +309,19 @@
     "name": "setBunnyName",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "xYzKBunnies",
+    "outputs": [
+      {
+        "internalType": "contract XYzKBunnies",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

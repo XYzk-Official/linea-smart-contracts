@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity =0.5.16;
 
-import "./interfaces/IXYzKERC20.sol";
+import "./interfaces/IXYzKLPERC20.sol";
 import "./libraries/SafeMath.sol";
 
-contract XYzKERC20 is IXYzKERC20 {
+contract XYzKLPERC20 is IXYzKLPERC20 {
     using SafeMath for uint256;
 
     string public constant name = "XYzK LPs";

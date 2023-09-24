@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "bsc-library/contracts/IBEP20.sol";
 import "bsc-library/contracts/SafeBEP20.sol";
 
-import "./interfaces/IBeraSleepProfile.sol";
+import "./interfaces/IXYzKProfile.sol";
 import "./BunnyMintingStation.sol";
 import "./TradingCompV2.sol";
 
@@ -18,12 +18,12 @@ contract TradingCompV2RewardDistribution is Ownable {
     using SafeBEP20 for IBEP20;
 
     BunnyMintingStation public bunnyMintingStation;
-    IBEP20 public beraSleepToken;
+    IBEP20 public xYzKToken;
     IBEP20 public lazioToken;
     IBEP20 public portoToken;
     IBEP20 public santosToken;
 
-    IBeraSleepProfile public beraSleepProfile;
+    IXYzKProfile public xYzKProfile;
     TradingCompV2 public tradingCompV2;
 
     uint256 public constant numberTeams = 3;
@@ -48,7 +48,7 @@ contract TradingCompV2RewardDistribution is Ownable {
 
     struct CompetitionRewards {
         uint256[5] userCampaignId; // campaignId for user increase
-        uint256[5] beraSleepRewards; // BeraSleep rewards per group
+        uint256[5] xYzKRewards; // XYzK rewards per group
         uint256[5] lazioRewards; // lazio fan token rewards per group
         uint256[5] portoRewards; // porto fan token rewards per group
         uint256[5] santosRewards; // santos fan token rewards per group
@@ -67,26 +67,26 @@ contract TradingCompV2RewardDistribution is Ownable {
 
     /**
      * @notice It initializes the contract.
-     * @param _beraSleepProfileAddress: BeraSleepProfile address
+     * @param _xYzKProfileAddress: XYzKProfile address
      * @param _bunnyStationAddress: BunnyMintingStation address
-     * @param _beraSleepTokenAddress: the address of the CAKE token
+     * @param _xYzKTokenAddress: the address of the CAKE token
      * @param _lazioTokenAddress: the address of the LAZIO fan token
      * @param _portoTokenAddress: the address of the PORTO fan token
      * @param _santosTokenAddress: the address of the SANTOS fan token
      * @param _tradingCompV2Address: the address of the TradingCompV2 fan token
      */
     constructor(
-        address _beraSleepProfileAddress,
+        address _xYzKProfileAddress,
         address _bunnyStationAddress,
-        address _beraSleepTokenAddress,
+        address _xYzKTokenAddress,
         address _lazioTokenAddress,
         address _portoTokenAddress,
         address _santosTokenAddress,
         address _tradingCompV2Address
     ) public {
-        beraSleepProfile = IBeraSleepProfile(_beraSleepProfileAddress);
+        xYzKProfile = IXYzKProfile(_xYzKProfileAddress);
         bunnyMintingStation = BunnyMintingStation(_bunnyStationAddress);
-        beraSleepToken = IBEP20(_beraSleepTokenAddress);
+        xYzKToken = IBEP20(_xYzKTokenAddress);
         lazioToken = IBEP20(_lazioTokenAddress);
         portoToken = IBEP20(_portoTokenAddress);
         santosToken = IBEP20(_santosTokenAddress);
@@ -109,7 +109,7 @@ contract TradingCompV2RewardDistribution is Ownable {
         );
 
         uint256 userTeamId;
-        (, , userTeamId, , , ) = beraSleepProfile.getUserProfile(senderAddress);
+        (, , userTeamId, , , ) = xYzKProfile.getUserProfile(senderAddress);
 
         require(hasUserRegistered, "NOT_REGISTERED");
         require(!userTradingStats[senderAddress].hasClaimed && !hasUserClaimed, "HAS_CLAIMED");
@@ -120,7 +120,7 @@ contract TradingCompV2RewardDistribution is Ownable {
         CompetitionRewards memory userRewards = _rewardCompetitions[userTeamId];
 
         if (userRewardGroup > 0) {
-            beraSleepToken.safeTransfer(senderAddress, userRewards.beraSleepRewards[userRewardGroup]);
+            xYzKToken.safeTransfer(senderAddress, userRewards.xYzKRewards[userRewardGroup]);
             lazioToken.safeTransfer(senderAddress, userRewards.lazioRewards[userRewardGroup]);
             portoToken.safeTransfer(senderAddress, userRewards.portoRewards[userRewardGroup]);
             santosToken.safeTransfer(senderAddress, userRewards.santosRewards[userRewardGroup]);
@@ -131,7 +131,7 @@ contract TradingCompV2RewardDistribution is Ownable {
         }
 
         // User collects points
-        beraSleepProfile.increaseUserPoints(
+        xYzKProfile.increaseUserPoints(
             senderAddress,
             userRewards.pointUsers[userRewardGroup],
             userRewards.userCampaignId[userRewardGroup]
@@ -155,7 +155,7 @@ contract TradingCompV2RewardDistribution is Ownable {
      */
     function claimCakeRemainder(uint256 _amount) external onlyOwner {
         require(currentStatus == CompetitionStatus.Over, "NOT_OVER");
-        beraSleepToken.safeTransfer(_msgSender(), _amount);
+        xYzKToken.safeTransfer(_msgSender(), _amount);
     }
 
     /**
@@ -193,7 +193,7 @@ contract TradingCompV2RewardDistribution is Ownable {
      * @dev Only callable by owner.
      * @param _teamId: the teamId
      * @param _userCampaignIds: campaignIds for each user group for teamId
-     * @param _beraSleepRewards: CAKE rewards for each user group for teamId
+     * @param _xYzKRewards: CAKE rewards for each user group for teamId
      * @param _lazioRewards: LAZIO rewards for each user group for teamId
      * @param _portoRewards: PORTO rewards for each user group for teamId
      * @param _santosRewards: SANTOS rewards for each user group for teamId
@@ -202,7 +202,7 @@ contract TradingCompV2RewardDistribution is Ownable {
     function updateTeamRewards(
         uint256 _teamId,
         uint256[5] calldata _userCampaignIds,
-        uint256[5] calldata _beraSleepRewards,
+        uint256[5] calldata _xYzKRewards,
         uint256[5] calldata _lazioRewards,
         uint256[5] calldata _portoRewards,
         uint256[5] calldata _santosRewards,
@@ -210,7 +210,7 @@ contract TradingCompV2RewardDistribution is Ownable {
     ) external onlyOwner {
         require(currentStatus == CompetitionStatus.Open, "NOT_OPEN");
         _rewardCompetitions[_teamId].userCampaignId = _userCampaignIds;
-        _rewardCompetitions[_teamId].beraSleepRewards = _beraSleepRewards;
+        _rewardCompetitions[_teamId].xYzKRewards = _xYzKRewards;
         _rewardCompetitions[_teamId].lazioRewards = _lazioRewards;
         _rewardCompetitions[_teamId].portoRewards = _portoRewards;
         _rewardCompetitions[_teamId].santosRewards = _santosRewards;
@@ -264,7 +264,7 @@ contract TradingCompV2RewardDistribution is Ownable {
         hasUserClaimed = hasUserClaimed || userTradingStats[_userAddress].hasClaimed;
 
         uint256 userTeamId;
-        (, , userTeamId, , , ) = beraSleepProfile.getUserProfile(_userAddress);
+        (, , userTeamId, , , ) = xYzKProfile.getUserProfile(_userAddress);
 
         bool canClaimNFT;
         if ((userTeamId == winningTeamId) && (userRewardGroup > 0)) {
@@ -275,7 +275,7 @@ contract TradingCompV2RewardDistribution is Ownable {
             hasUserRegistered,
             hasUserClaimed,
             userRewardGroup,
-            _rewardCompetitions[userTeamId].beraSleepRewards[userRewardGroup],
+            _rewardCompetitions[userTeamId].xYzKRewards[userRewardGroup],
             _rewardCompetitions[userTeamId].lazioRewards[userRewardGroup],
             _rewardCompetitions[userTeamId].portoRewards[userRewardGroup],
             _rewardCompetitions[userTeamId].santosRewards[userRewardGroup],

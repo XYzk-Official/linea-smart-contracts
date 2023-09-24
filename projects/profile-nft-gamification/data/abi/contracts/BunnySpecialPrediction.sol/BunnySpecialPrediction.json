@@ -3,7 +3,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_beraSleepPrediction",
+        "name": "_xYzKPrediction",
         "type": "address"
       },
       {
@@ -13,7 +13,7 @@
       },
       {
         "internalType": "address",
-        "name": "_beraSleepProfile",
+        "name": "_xYzKProfile",
         "type": "address"
       },
       {
@@ -140,32 +140,6 @@
     ],
     "name": "OwnershipTransferred",
     "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "beraSleepPrediction",
-    "outputs": [
-      {
-        "internalType": "contract BnbPricePrediction",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "beraSleepProfile",
-    "outputs": [
-      {
-        "internalType": "contract BeraSleepProfile",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [],
@@ -386,6 +360,32 @@
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "xYzKPrediction",
+    "outputs": [
+      {
+        "internalType": "contract BnbPricePrediction",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "xYzKProfile",
+    "outputs": [
+      {
+        "internalType": "contract XYzKProfile",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

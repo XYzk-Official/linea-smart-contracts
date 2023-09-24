@@ -8,12 +8,12 @@
       },
       {
         "internalType": "contract IBEP20",
-        "name": "_beraSleepToken",
+        "name": "_xYzKToken",
         "type": "address"
       },
       {
-        "internalType": "contract BeraSleepProfile",
-        "name": "_beraSleepProfile",
+        "internalType": "contract XYzKProfile",
+        "name": "_xYzKProfile",
         "type": "address"
       },
       {
@@ -144,39 +144,13 @@
       },
       {
         "internalType": "uint256",
-        "name": "_beraSleepCost",
+        "name": "_xYzKCost",
         "type": "uint256"
       }
     ],
     "name": "addBunny",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "beraSleepProfile",
-    "outputs": [
-      {
-        "internalType": "contract BeraSleepProfile",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "beraSleepToken",
-    "outputs": [
-      {
-        "internalType": "contract IBEP20",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -201,7 +175,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "beraSleepCost",
+        "name": "xYzKCost",
         "type": "uint256"
       },
       {
@@ -402,7 +376,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "_beraSleepCost",
+        "name": "_xYzKCost",
         "type": "uint256"
       },
       {
@@ -427,6 +401,32 @@
     "name": "updateMaxViewLength",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "xYzKProfile",
+    "outputs": [
+      {
+        "internalType": "contract XYzKProfile",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "xYzKToken",
+    "outputs": [
+      {
+        "internalType": "contract IBEP20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

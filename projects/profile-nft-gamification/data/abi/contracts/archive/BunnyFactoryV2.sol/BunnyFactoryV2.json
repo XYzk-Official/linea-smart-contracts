@@ -2,8 +2,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract BeraSleepBunnies",
-        "name": "_beraSleepBunnies",
+        "internalType": "contract XYzKBunnies",
+        "name": "_xYzKBunnies",
         "type": "address"
       },
       {
@@ -78,19 +78,6 @@
     ],
     "name": "OwnershipTransferred",
     "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "beraSleepBunnies",
-    "outputs": [
-      {
-        "internalType": "contract BeraSleepBunnies",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [],
@@ -338,6 +325,19 @@
     "name": "updateTokenPrice",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "xYzKBunnies",
+    "outputs": [
+      {
+        "internalType": "contract XYzKBunnies",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

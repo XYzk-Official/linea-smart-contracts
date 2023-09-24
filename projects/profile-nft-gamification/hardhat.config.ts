@@ -27,11 +27,17 @@ const ftmTest: NetworkUserConfig = {
   accounts: [process.env.KEY_TESTNET!],
 };
 
+const lineaTest: NetworkUserConfig = {
+  chainId: 59140,
+  url: "https://rpc.goerli.linea.build/",
+  accounts: [process.env.KEY_TESTNET!],
+};
+
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {},
-    testnet: ftmTest,
+    testnet: lineaTest,
     // mainnet: bscMainnet,
   },
   solidity: {

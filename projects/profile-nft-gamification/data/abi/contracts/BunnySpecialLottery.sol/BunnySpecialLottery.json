@@ -3,7 +3,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_beraSleepSwapLotteryAddress",
+        "name": "_xYzKSwapLotteryAddress",
         "type": "address"
       },
       {
@@ -13,7 +13,7 @@
       },
       {
         "internalType": "address",
-        "name": "_beraSleepProfileAddress",
+        "name": "_xYzKProfileAddress",
         "type": "address"
       },
       {
@@ -225,32 +225,6 @@
     ],
     "name": "OwnershipTransferred",
     "type": "event"
-  },
-  {
-    "inputs": [],
-    "name": "beraSleepProfile",
-    "outputs": [
-      {
-        "internalType": "contract BeraSleepProfile",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "beraSleepSwapLottery",
-    "outputs": [
-      {
-        "internalType": "contract IBeraSleepLottery",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
   },
   {
     "inputs": [],
@@ -628,6 +602,32 @@
     "name": "whitelistAddresses",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "xYzKProfile",
+    "outputs": [
+      {
+        "internalType": "contract XYzKProfile",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "xYzKSwapLottery",
+    "outputs": [
+      {
+        "internalType": "contract IXYzKLottery",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

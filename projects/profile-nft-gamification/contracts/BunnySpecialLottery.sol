@@ -3,16 +3,16 @@ pragma solidity ^0.6.12;
 
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-import {IBeraSleepLottery} from "lottery/contracts/interfaces/IBeraSleepLottery.sol";
+import {IXYzKLottery} from "lottery/contracts/interfaces/IXYzKLottery.sol";
 import {BunnyMintingStation} from "./BunnyMintingStation.sol";
-import {BeraSleepProfile} from "./BeraSleepProfile.sol";
+import {XYzKProfile} from "./XYzKProfile.sol";
 
 contract BunnySpecialLottery is Ownable {
     /*** Contracts ***/
 
-    IBeraSleepLottery public beraSleepSwapLottery;
+    IXYzKLottery public xYzKSwapLottery;
     BunnyMintingStation public bunnyMintingStation;
-    BeraSleepProfile public beraSleepProfile;
+    XYzKProfile public xYzKProfile;
 
     /*** Storage ***/
 
@@ -43,9 +43,9 @@ contract BunnySpecialLottery is Ownable {
     /*** Constructor ***/
 
     constructor(
-        address _beraSleepSwapLotteryAddress,
+        address _xYzKSwapLotteryAddress,
         address _bunnyMintingStationAddress,
-        address _beraSleepProfileAddress,
+        address _xYzKProfileAddress,
         uint256 _endBlock,
         string memory _tokenURI1,
         string memory _tokenURI2,
@@ -59,9 +59,9 @@ contract BunnySpecialLottery is Ownable {
         uint256 _startLotteryRound,
         uint256 _finalLotteryRound
     ) public {
-        beraSleepSwapLottery = IBeraSleepLottery(_beraSleepSwapLotteryAddress);
+        xYzKSwapLottery = IXYzKLottery(_xYzKSwapLotteryAddress);
         bunnyMintingStation = BunnyMintingStation(_bunnyMintingStationAddress);
-        beraSleepProfile = BeraSleepProfile(_beraSleepProfileAddress);
+        xYzKProfile = XYzKProfile(_xYzKProfileAddress);
 
         endBlock = _endBlock;
 
@@ -102,8 +102,8 @@ contract BunnySpecialLottery is Ownable {
         // Mint collectible and send it to the user.
         uint256 tokenId = bunnyMintingStation.mintCollectible(msg.sender, tokenURIs[_bunnyId], _bunnyId);
 
-        // Increase point on BeraSleep profile, for a given campaignId.
-        beraSleepProfile.increaseUserPoints(msg.sender, numberPoints[_bunnyId], campaignIds[_bunnyId]);
+        // Increase point on XYzK profile, for a given campaignId.
+        xYzKProfile.increaseUserPoints(msg.sender, numberPoints[_bunnyId], campaignIds[_bunnyId]);
 
         emit BunnyMint(msg.sender, tokenId, _bunnyId);
     }
@@ -147,7 +147,7 @@ contract BunnySpecialLottery is Ownable {
     }
 
     /**
-     * @notice Change the campaignId for BeraSleep Profile.
+     * @notice Change the campaignId for XYzK Profile.
      * @dev Only callable by owner.
      */
     function changeCampaignId(uint8 _bunnyId, uint256 _campaignId) external onlyOwner validNftId(_bunnyId) {
@@ -156,7 +156,7 @@ contract BunnySpecialLottery is Ownable {
     }
 
     /**
-     * @notice Change the number of points for BeraSleep Profile.
+     * @notice Change the number of points for XYzK Profile.
      * @dev Only callable by owner.
      */
     function changeNumberPoints(uint8 _bunnyId, uint256 _numberPoints) external onlyOwner validNftId(_bunnyId) {
@@ -214,7 +214,7 @@ contract BunnySpecialLottery is Ownable {
         // Common requirements for being able to claim any NFT
         if (
             hasClaimed[_userAddress][_bunnyId] ||
-            !beraSleepProfile.getUserStatus(_userAddress) ||
+            !xYzKProfile.getUserStatus(_userAddress) ||
             block.number >= endBlock ||
             _lotteryId < startLotteryRound ||
             _lotteryId > finalLotteryRound
@@ -224,19 +224,14 @@ contract BunnySpecialLottery is Ownable {
 
         if (_bunnyId == nftId1) {
             uint256 size;
-            (, , , size) = beraSleepSwapLottery.viewUserInfoForLotteryId(_userAddress, _lotteryId, 0, 1);
+            (, , , size) = xYzKSwapLottery.viewUserInfoForLotteryId(_userAddress, _lotteryId, 0, 1);
             return size > 0;
         }
         if (_bunnyId == nftId2) {
             bool[] memory ticketStatuses;
             uint256 size;
 
-            (, , ticketStatuses, size) = beraSleepSwapLottery.viewUserInfoForLotteryId(
-                _userAddress,
-                _lotteryId,
-                _cursor,
-                1
-            );
+            (, , ticketStatuses, size) = xYzKSwapLottery.viewUserInfoForLotteryId(_userAddress, _lotteryId, _cursor, 1);
 
             return size > 0 && ticketStatuses[0];
         }
