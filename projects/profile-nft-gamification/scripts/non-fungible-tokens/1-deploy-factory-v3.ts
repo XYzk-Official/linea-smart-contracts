@@ -7,30 +7,30 @@ const currentNetwork = network.name;
 const main = async () => {
   console.log("Deploying to network:", currentNetwork);
 
-  const BeraSleepBunniesContract = await ethers.getContractFactory("BeraSleepBunnies");
+  const bunniesContract = await ethers.getContractFactory("XYzKBunnies");
 
-  const beraSleepBunnies = await BeraSleepBunniesContract.deploy("ipfs://");
+  const xyzkBunnies = await bunniesContract.deploy("ipfs://");
 
-  console.log("BeraSleepBunnies deployed to:", beraSleepBunnies.address);
-  await beraSleepBunnies.setBunnyName(5, "Sleepy");
-  await beraSleepBunnies.setBunnyName(6, "Dollop");
-  await beraSleepBunnies.setBunnyName(7, "Twinkle");
-  await beraSleepBunnies.setBunnyName(8, "Churro");
-  await beraSleepBunnies.setBunnyName(9, "Sunny");
+  console.log("XYzKBunnies deployed to:", xyzkBunnies.address);
+  await xyzkBunnies.setBunnyName(5, "Sleepy");
+  await xyzkBunnies.setBunnyName(6, "Dollop");
+  await xyzkBunnies.setBunnyName(7, "Twinkle");
+  await xyzkBunnies.setBunnyName(8, "Churro");
+  await xyzkBunnies.setBunnyName(9, "Sunny");
 
-  const _tokenPrice = parseEther("4");
+  const _tokenPrice = parseEther("2");
   const _ipfsHash = "";
   const _startBlockTime = "1";
   const _endBlockTime = "1";
 
   const BunnyMintingStation = await ethers.getContractFactory("BunnyMintingStation");
-  const bunnyMintingStation = await BunnyMintingStation.deploy(beraSleepBunnies.address);
+  const bunnyMintingStation = await BunnyMintingStation.deploy(xyzkBunnies.address);
   console.log("BunnyMintingStation deployed to:", bunnyMintingStation.address);
 
   const BunnyFactoryV2 = await ethers.getContractFactory("BunnyFactoryV2");
   const bunnyFactoryV2 = await BunnyFactoryV2.deploy(
-    beraSleepBunnies.address,
-    config.BeraSleepToken[currentNetwork],
+    xyzkBunnies.address,
+    config.XYzKToken[currentNetwork],
     _tokenPrice,
     _ipfsHash,
     _startBlockTime,
@@ -41,7 +41,7 @@ const main = async () => {
   const bunnyFactoryV3 = await BunnyFactoryV3.deploy(
     bunnyFactoryV2.address,
     bunnyMintingStation.address,
-    config.BeraSleepToken[currentNetwork],
+    config.XYzKToken[currentNetwork],
     _tokenPrice,
     _ipfsHash,
     _startBlockTime
@@ -55,7 +55,7 @@ const main = async () => {
   console.log("minter_role", MINTER_ROLE);
   await bunnyMintingStation.grantRole(MINTER_ROLE, bunnyFactoryV3.address);
 
-  await beraSleepBunnies.transferOwnership(bunnyMintingStation.address);
+  await xyzkBunnies.transferOwnership(bunnyMintingStation.address);
 };
 
 main()

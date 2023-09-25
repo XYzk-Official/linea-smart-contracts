@@ -13,7 +13,7 @@
       },
       {
         "internalType": "contract IBEP20",
-        "name": "_cakeToken",
+        "name": "_xyzkToken",
         "type": "address"
       },
       {
@@ -98,19 +98,6 @@
     "outputs": [
       {
         "internalType": "contract BunnyMintingStation",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "cakeToken",
-    "outputs": [
-      {
-        "internalType": "contract IBEP20",
         "name": "",
         "type": "address"
       }
@@ -298,6 +285,19 @@
     "name": "updateTokenPrice",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "xyzkToken",
+    "outputs": [
+      {
+        "internalType": "contract IBEP20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

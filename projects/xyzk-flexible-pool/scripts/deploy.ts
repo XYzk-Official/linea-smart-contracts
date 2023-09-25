@@ -9,14 +9,9 @@ const main = async () => {
 
   const XYzKFlexiblePoolContract = await ethers.getContractFactory("XYzKFlexiblePool");
 
-  const beraSleepFlexiblePool = await XYzKFlexiblePoolContract.deploy(
-    config.XYzK[name],
-    config.XYzKPool[name],
-    admin,
-    treasury
-  );
+  const pool = await XYzKFlexiblePoolContract.deploy(config.XYzK[name], config.XYzKPool[name], admin, treasury);
 
-  console.log("XYzKFlexiblePool: ", beraSleepFlexiblePool.address);
+  console.log("XYzKFlexiblePool: ", pool.address);
 };
 
 main()

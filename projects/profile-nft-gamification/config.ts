@@ -17,7 +17,7 @@ export default {
   },
   BunnyFactoryV3: {
     mainnet: "0xfa249Caa1D16f75fa159F7DFBAc0cC5EaB48CeFf",
-    testnet: "0x707CBF373175fdB601D34eeBF2Cf665d08f01148",
+    testnet: "0x2d500dEf175EdB07fb0C4358e32C1CFa16128715",
   },
   BunnySpecialV1: {
     // Hiccup
@@ -31,7 +31,7 @@ export default {
   },
   BunnyMintingStation: {
     mainnet: "0x0000000000000000000000000000000000000000",
-    testnet: "0x255F3F09cB7F3584901D2cB8BA6FfE91E4a5dBca",
+    testnet: "0xa704E892bEA147efBab858184af2FfBad625564b",
   },
   XYzKToken: {
     mainnet: "0x0000000000000000000000000000000000000000",
@@ -61,13 +61,13 @@ export default {
     mainnet: "0x9b872C05C38A3563393668839659bA336Cc969B2",
     testnet: "",
   },
-  BeraSleepBunnies: {
+  XYzKBunnies: {
     mainnet: "0xDf7952B35f24aCF7fC0487D01c8d5690a60DBa07",
     testnet: "0xe9Bd12AEEDc8b322911b2AB0201c567272D16BeC",
   },
-  BeraSleepProfile: {
+  XYzKProfile: {
     mainnet: "0xDf4dBf6536201370F95e06A0F8a7a70fE40E388a",
-    testnet: "0xAec50Cc30f13Ce836c81314f83486a6A06D75BD2",
+    testnet: "0x0E59D921E2E8E14AB20276b064abAB0417c30A57",
   },
   Lottery: {
     mainnet: "0x5aF6D33DE2ccEC94efb1bDF8f92Bd58085432d2c",

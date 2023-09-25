@@ -19,12 +19,12 @@ contract BunnyFactoryV3 is Ownable {
     BunnyFactoryV2 public bunnyFactoryV2;
     BunnyMintingStation public bunnyMintingStation;
 
-    IBEP20 public cakeToken;
+    IBEP20 public xyzkToken;
 
     // starting block
     uint256 public startBlockNumber;
 
-    // Number of CAKEs a user needs to pay to acquire a token
+    // Number of XYzKs a user needs to pay to acquire a token
     uint256 public tokenPrice;
 
     // Map if address has already claimed a NFT
@@ -51,14 +51,14 @@ contract BunnyFactoryV3 is Ownable {
     constructor(
         BunnyFactoryV2 _bunnyFactoryV2,
         BunnyMintingStation _bunnyMintingStation,
-        IBEP20 _cakeToken,
+        IBEP20 _xyzkToken,
         uint256 _tokenPrice,
         string memory _ipfsHash,
         uint256 _startBlockNumber
     ) public {
         bunnyFactoryV2 = _bunnyFactoryV2;
         bunnyMintingStation = _bunnyMintingStation;
-        cakeToken = _cakeToken;
+        xyzkToken = _xyzkToken;
         tokenPrice = _tokenPrice;
         ipfsHash = _ipfsHash;
         startBlockNumber = _startBlockNumber;
@@ -87,8 +87,8 @@ contract BunnyFactoryV3 is Ownable {
         // Update that _msgSender() has claimed
         hasClaimed[senderAddress] = true;
 
-        // Send CAKE tokens to this contract
-        cakeToken.safeTransferFrom(senderAddress, address(this), tokenPrice);
+        // Send XYzK tokens to this contract
+        xyzkToken.safeTransferFrom(senderAddress, address(this), tokenPrice);
 
         string memory tokenURI = bunnyIdURIs[_bunnyId];
 
@@ -98,11 +98,11 @@ contract BunnyFactoryV3 is Ownable {
     }
 
     /**
-     * @dev It transfers the CAKE tokens back to the chef address.
+     * @dev It transfers the XYzK tokens back to the chef address.
      * Only callable by the owner.
      */
     function claimFee(uint256 _amount) external onlyOwner {
-        cakeToken.safeTransfer(_msgSender(), _amount);
+        xyzkToken.safeTransfer(_msgSender(), _amount);
     }
 
     /**
