@@ -12,7 +12,7 @@ const main = async () => {
     const ifoV2 = await IFOV2.deploy(
       config.LPToken[name],
       config.OfferingToken[name],
-      config.BeraSleepProfile[name],
+      config.XYzKProfile[name],
       config.StartBlock[name],
       config.EndBlock[name],
       config.AdminAddress[name]
@@ -28,7 +28,7 @@ const main = async () => {
     const ifoV2 = await IFOV2.deploy(
       lpToken.address,
       offeringToken.address,
-      config.BeraSleepProfile[name],
+      config.XYzKProfile[name],
       config.StartBlock[name],
       config.EndBlock[name],
       config.AdminAddress[name]

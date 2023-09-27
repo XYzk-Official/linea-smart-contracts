@@ -6,7 +6,7 @@ const main = async () => {
 
   console.log(`Deploying to: ${name}...`);
   const IFODeployer = await ethers.getContractFactory("IFODeployer");
-  const ifoDeployer = await IFODeployer.deploy(config.BeraSleepProfile[name]);
+  const ifoDeployer = await IFODeployer.deploy(config.XYzKProfile[name]);
   console.log("IFODeployer deployed to:", ifoDeployer.address);
 };
 
