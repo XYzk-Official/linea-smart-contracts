@@ -3,15 +3,15 @@
 pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "./libraries//Ownable.sol";
+import "./libraries/SafeMath.sol";
+import "./libraries/ReentrancyGuard.sol";
 import "./interfaces/IBEP20.sol";
 import "./SafeBEP20.sol";
 import "./interfaces/IMasterChef.sol";
 
-/// @notice The (older) MasterChef contract gives out a constant number of BERASLEEP tokens per block.
-/// It is the only address with minting rights for BERASLEEP.
+/// @notice The (older) MasterChef contract gives out a constant number of XYZK tokens per block.
+/// It is the only address with minting rights for XYZK.
 /// The idea for this MasterChef V2 (MCV2) contract is therefore to be the owner of a dummy token
 /// that is deposited into the MasterChef V1 (MCV1) contract.
 /// The allocation point for this pool on MCV1 is the total allocation point for all pools that receive incentives.
@@ -23,13 +23,13 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
     /// `amount` LP token amount the user has provided.
     /// `rewardDebt` Used to calculate the correct amount of rewards. See explanation below.
     ///
-    /// We do some fancy math here. Basically, any point in time, the amount of BERASLEEPs
+    /// We do some fancy math here. Basically, any point in time, the amount of XYZKs
     /// entitled to a user but is pending to be distributed is:
     ///
-    ///   pending reward = (user share * pool.accBeraSleepPerShare) - user.rewardDebt
+    ///   pending reward = (user share * pool.accXYZKPerShare) - user.rewardDebt
     ///
     ///   Whenever a user deposits or withdraws LP tokens to a pool. Here's what happens:
-    ///   1. The pool's `accBeraSleepPerShare` (and `lastRewardBlock`) gets updated.
+    ///   1. The pool's `accXYzKPerShare` (and `lastRewardBlock`) gets updated.
     ///   2. User receives the pending reward sent to his/her address.
     ///   3. User's `amount` gets updated. Pool's `totalBoostedShare` gets updated.
     ///   4. User's `rewardDebt` gets updated.
@@ -42,16 +42,16 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
     /// @notice Info of each MCV2 pool.
     /// `allocPoint` The amount of allocation points assigned to the pool.
     ///     Also known as the amount of "multipliers". Combined with `totalXAllocPoint`, it defines the % of
-    ///     BERASLEEP rewards each pool gets.
-    /// `accBeraSleepPerShare` Accumulated BERASLEEPs per share, times 1e12.
+    ///     XYZK rewards each pool gets.
+    /// `accXYzKPerShare` Accumulated XYZKs per share, times 1e12.
     /// `lastRewardBlock` Last block number that pool update action is executed.
     /// `isRegular` The flag to set pool is regular or special. See below:
     ///     In MasterChef V2 farms are "regular pools". "special pools", which use a different sets of
     ///     `allocPoint` and their own `totalSpecialAllocPoint` are designed to handle the distribution of
-    ///     the BERASLEEP rewards to all the PancakeSwap products.
+    ///     the XYZK rewards to all the PancakeSwap products.
     /// `totalBoostedShare` The total amount of user shares in each pool. After considering the share boosts.
     struct PoolInfo {
-        uint256 accBeraSleepPerShare;
+        uint256 accXYzKPerShare;
         uint256 lastRewardBlock;
         uint256 allocPoint;
         uint256 totalBoostedShare;
@@ -60,10 +60,10 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
 
     /// @notice Address of MCV1 contract.
     IMasterChef public immutable MASTER_CHEF;
-    /// @notice Address of BERASLEEP contract.
-    IBEP20 public immutable BERASLEEP;
+    /// @notice Address of XYZK contract.
+    IBEP20 public immutable XYZK;
 
-    /// @notice The only address can withdraw all the burn BERASLEEP.
+    /// @notice The only address can withdraw all the burn XYZK.
     address public burnAdmin;
     /// @notice The contract handles the share boosts.
     address public boostContract;
@@ -85,21 +85,21 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
     /// @notice Total special allocation points. Must be the sum of all special pools' allocation points.
     uint256 public totalSpecialAllocPoint;
     ///  @notice 40 cakes per block in MCV1
-    uint256 public constant MASTERCHEF_BERASLEEP_PER_BLOCK = 40 * 1e18;
-    uint256 public constant ACC_BERASLEEP_PRECISION = 1e18;
+    uint256 public constant MASTERCHEF_XYZK_PER_BLOCK = 40 * 1e18;
+    uint256 public constant ACC_XYZK_PRECISION = 1e18;
 
     /// @notice Basic boost factor, none boosted user's boost factor
     uint256 public constant BOOST_PRECISION = 100 * 1e10;
     /// @notice Hard limit for maxmium boost factor, it must greater than BOOST_PRECISION
     uint256 public constant MAX_BOOST_PRECISION = 200 * 1e10;
     /// @notice total cake rate = toBurn + toRegular + toSpecial
-    uint256 public constant BERASLEEP_RATE_TOTAL_PRECISION = 1e12;
-    /// @notice The last block number of BERASLEEP burn action being executed.
-    /// @notice BERASLEEP distribute % for burn
+    uint256 public constant XYZK_RATE_TOTAL_PRECISION = 1e12;
+    /// @notice The last block number of XYZK burn action being executed.
+    /// @notice XYZK distribute % for burn
     uint256 public cakeRateToBurn = 643750000000;
-    /// @notice BERASLEEP distribute % for regular farm pool
+    /// @notice XYZK distribute % for regular farm pool
     uint256 public cakeRateToRegularFarm = 62847222222;
-    /// @notice BERASLEEP distribute % for special pools
+    /// @notice XYZK distribute % for special pools
     uint256 public cakeRateToSpecialFarm = 293402777778;
 
     uint256 public lastBurnedBlock;
@@ -107,24 +107,24 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
     event Init();
     event AddPool(uint256 indexed pid, uint256 allocPoint, IBEP20 indexed lpToken, bool isRegular);
     event SetPool(uint256 indexed pid, uint256 allocPoint);
-    event UpdatePool(uint256 indexed pid, uint256 lastRewardBlock, uint256 lpSupply, uint256 accBeraSleepPerShare);
+    event UpdatePool(uint256 indexed pid, uint256 lastRewardBlock, uint256 lpSupply, uint256 accXYzKPerShare);
     event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
     event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
     event EmergencyWithdraw(address indexed user, uint256 indexed pid, uint256 amount);
 
-    event UpdateBeraSleepRate(uint256 burnRate, uint256 regularFarmRate, uint256 specialFarmRate);
+    event UpdateXYzKRate(uint256 burnRate, uint256 regularFarmRate, uint256 specialFarmRate);
     event UpdateBurnAdmin(address indexed oldAdmin, address indexed newAdmin);
     event UpdateWhiteList(address indexed user, bool isValid);
     event UpdateBoostContract(address indexed boostContract);
     event UpdateBoostMultiplier(address indexed user, uint256 pid, uint256 oldMultiplier, uint256 newMultiplier);
 
     /// @param _MASTER_CHEF The PancakeSwap MCV1 contract address.
-    /// @param _BERASLEEP The BERASLEEP token contract address.
+    /// @param _XYZK The XYZK token contract address.
     /// @param _MASTER_PID The pool id of the dummy pool on the MCV1.
     /// @param _burnAdmin The address of burn admin.
-    constructor(IMasterChef _MASTER_CHEF, IBEP20 _BERASLEEP, uint256 _MASTER_PID, address _burnAdmin) public {
+    constructor(IMasterChef _MASTER_CHEF, IBEP20 _XYZK, uint256 _MASTER_PID, address _burnAdmin) public {
         MASTER_CHEF = _MASTER_CHEF;
-        BERASLEEP = _BERASLEEP;
+        XYZK = _XYZK;
         MASTER_PID = _MASTER_PID;
         burnAdmin = _burnAdmin;
     }
@@ -137,7 +137,7 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
         _;
     }
 
-    /// @notice Deposits a dummy token to `MASTER_CHEF` MCV1. This is required because MCV1 holds the minting permission of BERASLEEP.
+    /// @notice Deposits a dummy token to `MASTER_CHEF` MCV1. This is required because MCV1 holds the minting permission of XYZK.
     /// It will transfer all the `dummyToken` in the tx sender address.
     /// The allocation point for the dummy pool on MCV1 should be equal to the total amount of allocPoint.
     /// @param dummyToken The address of the BEP-20 token to be deposited into MCV1.
@@ -147,7 +147,7 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
         dummyToken.safeTransferFrom(msg.sender, address(this), balance);
         dummyToken.approve(address(MASTER_CHEF), balance);
         MASTER_CHEF.deposit(MASTER_PID, balance);
-        // MCV2 start to earn BERASLEEP reward from current block in MCV1 pool
+        // MCV2 start to earn XYZK reward from current block in MCV1 pool
         lastBurnedBlock = block.number;
         emit Init();
     }
@@ -163,12 +163,12 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
     /// @param _lpToken Address of the LP BEP-20 token.
     /// @param _isRegular Whether the pool is regular or special. LP farms are always "regular". "Special" pools are
     /// @param _withUpdate Whether call "massUpdatePools" operation.
-    /// only for BERASLEEP distributions within PancakeSwap products.
+    /// only for XYZK distributions within PancakeSwap products.
     function add(uint256 _allocPoint, IBEP20 _lpToken, bool _isRegular, bool _withUpdate) external onlyOwner {
         require(_lpToken.balanceOf(address(this)) >= 0, "None BEP20 tokens");
-        // stake BERASLEEP token will cause staked token and reward token mixed up,
+        // stake XYZK token will cause staked token and reward token mixed up,
         // may cause staked tokens withdraw as reward token,never do it.
-        require(_lpToken != BERASLEEP, "BERASLEEP token can't be added to farm pools");
+        require(_lpToken != XYZK, "XYZK token can't be added to farm pools");
 
         if (_withUpdate) {
             massUpdatePools();
@@ -185,7 +185,7 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
             PoolInfo({
                 allocPoint: _allocPoint,
                 lastRewardBlock: block.number,
-                accBeraSleepPerShare: 0,
+                accXYzKPerShare: 0,
                 isRegular: _isRegular,
                 totalBoostedShare: 0
             })
@@ -193,7 +193,7 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
         emit AddPool(lpToken.length.sub(1), _allocPoint, _lpToken, _isRegular);
     }
 
-    /// @notice Update the given pool's BERASLEEP allocation point. Can only be called by the owner.
+    /// @notice Update the given pool's XYZK allocation point. Can only be called by the owner.
     /// @param _pid The id of the pool. See `poolInfo`.
     /// @param _allocPoint New number of allocation points for the pool.
     /// @param _withUpdate Whether call "massUpdatePools" operation.
@@ -214,13 +214,13 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
         emit SetPool(_pid, _allocPoint);
     }
 
-    /// @notice View function for checking pending BERASLEEP rewards.
+    /// @notice View function for checking pending XYZK rewards.
     /// @param _pid The id of the pool. See `poolInfo`.
     /// @param _user Address of the user.
-    function pendingBeraSleep(uint256 _pid, address _user) external view returns (uint256) {
+    function pendingXYzK(uint256 _pid, address _user) external view returns (uint256) {
         PoolInfo memory pool = poolInfo[_pid];
         UserInfo memory user = userInfo[_pid][_user];
-        uint256 accBeraSleepPerShare = pool.accBeraSleepPerShare;
+        uint256 accXYzKPerShare = pool.accXYzKPerShare;
         uint256 lpSupply = pool.totalBoostedShare;
 
         if (block.number > pool.lastRewardBlock && lpSupply != 0) {
@@ -229,11 +229,11 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
             uint256 cakeReward = multiplier.mul(cakePerBlock(pool.isRegular)).mul(pool.allocPoint).div(
                 (pool.isRegular ? totalRegularAllocPoint : totalSpecialAllocPoint)
             );
-            accBeraSleepPerShare = accBeraSleepPerShare.add(cakeReward.mul(ACC_BERASLEEP_PRECISION).div(lpSupply));
+            accXYzKPerShare = accXYzKPerShare.add(cakeReward.mul(ACC_XYZK_PRECISION).div(lpSupply));
         }
 
         uint256 boostedAmount = user.amount.mul(getBoostMultiplier(_user, _pid)).div(BOOST_PRECISION);
-        return boostedAmount.mul(accBeraSleepPerShare).div(ACC_BERASLEEP_PRECISION).sub(user.rewardDebt);
+        return boostedAmount.mul(accXYzKPerShare).div(ACC_XYZK_PRECISION).sub(user.rewardDebt);
     }
 
     /// @notice Update cake reward for all the active pools. Be careful of gas spending!
@@ -247,19 +247,19 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
         }
     }
 
-    /// @notice Calculates and returns the `amount` of BERASLEEP per block.
+    /// @notice Calculates and returns the `amount` of XYZK per block.
     /// @param _isRegular If the pool belongs to regular or special.
     function cakePerBlock(bool _isRegular) public view returns (uint256 amount) {
         if (_isRegular) {
-            amount = MASTERCHEF_BERASLEEP_PER_BLOCK.mul(cakeRateToRegularFarm).div(BERASLEEP_RATE_TOTAL_PRECISION);
+            amount = MASTERCHEF_XYZK_PER_BLOCK.mul(cakeRateToRegularFarm).div(XYZK_RATE_TOTAL_PRECISION);
         } else {
-            amount = MASTERCHEF_BERASLEEP_PER_BLOCK.mul(cakeRateToSpecialFarm).div(BERASLEEP_RATE_TOTAL_PRECISION);
+            amount = MASTERCHEF_XYZK_PER_BLOCK.mul(cakeRateToSpecialFarm).div(XYZK_RATE_TOTAL_PRECISION);
         }
     }
 
-    /// @notice Calculates and returns the `amount` of BERASLEEP per block to burn.
+    /// @notice Calculates and returns the `amount` of XYZK per block to burn.
     function cakePerBlockToBurn() public view returns (uint256 amount) {
-        amount = MASTERCHEF_BERASLEEP_PER_BLOCK.mul(cakeRateToBurn).div(BERASLEEP_RATE_TOTAL_PRECISION);
+        amount = MASTERCHEF_XYZK_PER_BLOCK.mul(cakeRateToBurn).div(XYZK_RATE_TOTAL_PRECISION);
     }
 
     /// @notice Update reward variables for the given pool.
@@ -276,13 +276,11 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
                 uint256 cakeReward = multiplier.mul(cakePerBlock(pool.isRegular)).mul(pool.allocPoint).div(
                     totalAllocPoint
                 );
-                pool.accBeraSleepPerShare = pool.accBeraSleepPerShare.add(
-                    (cakeReward.mul(ACC_BERASLEEP_PRECISION).div(lpSupply))
-                );
+                pool.accXYzKPerShare = pool.accXYzKPerShare.add((cakeReward.mul(ACC_XYZK_PRECISION).div(lpSupply)));
             }
             pool.lastRewardBlock = block.number;
             poolInfo[_pid] = pool;
-            emit UpdatePool(_pid, pool.lastRewardBlock, lpSupply, pool.accBeraSleepPerShare);
+            emit UpdatePool(_pid, pool.lastRewardBlock, lpSupply, pool.accXYzKPerShare);
         }
     }
 
@@ -301,7 +299,7 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
         uint256 multiplier = getBoostMultiplier(msg.sender, _pid);
 
         if (user.amount > 0) {
-            settlePendingBeraSleep(msg.sender, _pid, multiplier);
+            settlePendingXYzK(msg.sender, _pid, multiplier);
         }
 
         if (_amount > 0) {
@@ -314,8 +312,8 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
             pool.totalBoostedShare = pool.totalBoostedShare.add(_amount.mul(multiplier).div(BOOST_PRECISION));
         }
 
-        user.rewardDebt = user.amount.mul(multiplier).div(BOOST_PRECISION).mul(pool.accBeraSleepPerShare).div(
-            ACC_BERASLEEP_PRECISION
+        user.rewardDebt = user.amount.mul(multiplier).div(BOOST_PRECISION).mul(pool.accXYzKPerShare).div(
+            ACC_XYZK_PRECISION
         );
         poolInfo[_pid] = pool;
 
@@ -333,15 +331,15 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
 
         uint256 multiplier = getBoostMultiplier(msg.sender, _pid);
 
-        settlePendingBeraSleep(msg.sender, _pid, multiplier);
+        settlePendingXYzK(msg.sender, _pid, multiplier);
 
         if (_amount > 0) {
             user.amount = user.amount.sub(_amount);
             lpToken[_pid].safeTransfer(msg.sender, _amount);
         }
 
-        user.rewardDebt = user.amount.mul(multiplier).div(BOOST_PRECISION).mul(pool.accBeraSleepPerShare).div(
-            ACC_BERASLEEP_PRECISION
+        user.rewardDebt = user.amount.mul(multiplier).div(BOOST_PRECISION).mul(pool.accXYzKPerShare).div(
+            ACC_XYZK_PRECISION
         );
         poolInfo[_pid].totalBoostedShare = poolInfo[_pid].totalBoostedShare.sub(
             _amount.mul(multiplier).div(BOOST_PRECISION)
@@ -350,7 +348,7 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
         emit Withdraw(msg.sender, _pid, _amount);
     }
 
-    /// @notice Harvests BERASLEEP from `MASTER_CHEF` MCV1 and pool `MASTER_PID` to MCV2.
+    /// @notice Harvests XYZK from `MASTER_CHEF` MCV1 and pool `MASTER_PID` to MCV2.
     function harvestFromMasterChef() public {
         MASTER_CHEF.deposit(MASTER_PID, 0);
     }
@@ -372,27 +370,27 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
         emit EmergencyWithdraw(msg.sender, _pid, amount);
     }
 
-    /// @notice Send BERASLEEP pending for burn to `burnAdmin`.
+    /// @notice Send XYZK pending for burn to `burnAdmin`.
     /// @param _withUpdate Whether call "massUpdatePools" operation.
-    function burnBeraSleep(bool _withUpdate) public onlyOwner {
+    function burnXYzK(bool _withUpdate) public onlyOwner {
         if (_withUpdate) {
             massUpdatePools();
         }
 
         uint256 multiplier = block.number.sub(lastBurnedBlock);
-        uint256 pendingBeraSleepToBurn = multiplier.mul(cakePerBlockToBurn());
+        uint256 pendingXYzKToBurn = multiplier.mul(cakePerBlockToBurn());
 
-        // SafeTransfer BERASLEEP
-        _safeTransfer(burnAdmin, pendingBeraSleepToBurn);
+        // SafeTransfer XYZK
+        _safeTransfer(burnAdmin, pendingXYzKToBurn);
         lastBurnedBlock = block.number;
     }
 
-    /// @notice Update the % of BERASLEEP distributions for burn, regular pools and special pools.
-    /// @param _burnRate The % of BERASLEEP to burn each block.
-    /// @param _regularFarmRate The % of BERASLEEP to regular pools each block.
-    /// @param _specialFarmRate The % of BERASLEEP to special pools each block.
+    /// @notice Update the % of XYZK distributions for burn, regular pools and special pools.
+    /// @param _burnRate The % of XYZK to burn each block.
+    /// @param _regularFarmRate The % of XYZK to regular pools each block.
+    /// @param _specialFarmRate The % of XYZK to special pools each block.
     /// @param _withUpdate Whether call "massUpdatePools" operation.
-    function updateBeraSleepRate(
+    function updateXYzKRate(
         uint256 _burnRate,
         uint256 _regularFarmRate,
         uint256 _specialFarmRate,
@@ -400,23 +398,23 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
     ) external onlyOwner {
         require(
             _burnRate > 0 && _regularFarmRate > 0 && _specialFarmRate > 0,
-            "MasterChefV2: BeraSleep rate must be greater than 0"
+            "MasterChefV2: XYzK rate must be greater than 0"
         );
         require(
-            _burnRate.add(_regularFarmRate).add(_specialFarmRate) == BERASLEEP_RATE_TOTAL_PRECISION,
+            _burnRate.add(_regularFarmRate).add(_specialFarmRate) == XYZK_RATE_TOTAL_PRECISION,
             "MasterChefV2: Total rate must be 1e12"
         );
         if (_withUpdate) {
             massUpdatePools();
         }
         // burn cake base on old burn cake rate
-        burnBeraSleep(false);
+        burnXYzK(false);
 
         cakeRateToBurn = _burnRate;
         cakeRateToRegularFarm = _regularFarmRate;
         cakeRateToSpecialFarm = _specialFarmRate;
 
-        emit UpdateBeraSleepRate(_burnRate, _regularFarmRate, _specialFarmRate);
+        emit UpdateXYzKRate(_burnRate, _regularFarmRate, _specialFarmRate);
     }
 
     /// @notice Update burn admin address.
@@ -471,10 +469,10 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
         UserInfo storage user = userInfo[_pid][_user];
 
         uint256 prevMultiplier = getBoostMultiplier(_user, _pid);
-        settlePendingBeraSleep(_user, _pid, prevMultiplier);
+        settlePendingXYzK(_user, _pid, prevMultiplier);
 
-        user.rewardDebt = user.amount.mul(_newMultiplier).div(BOOST_PRECISION).mul(pool.accBeraSleepPerShare).div(
-            ACC_BERASLEEP_PRECISION
+        user.rewardDebt = user.amount.mul(_newMultiplier).div(BOOST_PRECISION).mul(pool.accXYzKPerShare).div(
+            ACC_XYZK_PRECISION
         );
         pool.totalBoostedShare = pool.totalBoostedShare.sub(user.amount.mul(prevMultiplier).div(BOOST_PRECISION)).add(
             user.amount.mul(_newMultiplier).div(BOOST_PRECISION)
@@ -493,34 +491,34 @@ contract MasterChefV2 is Ownable, ReentrancyGuard {
         return multiplier > BOOST_PRECISION ? multiplier : BOOST_PRECISION;
     }
 
-    /// @notice Settles, distribute the pending BERASLEEP rewards for given user.
+    /// @notice Settles, distribute the pending XYZK rewards for given user.
     /// @param _user The user address for settling rewards.
     /// @param _pid The pool id.
     /// @param _boostMultiplier The user boost multiplier in specific pool id.
-    function settlePendingBeraSleep(address _user, uint256 _pid, uint256 _boostMultiplier) internal {
+    function settlePendingXYzK(address _user, uint256 _pid, uint256 _boostMultiplier) internal {
         UserInfo memory user = userInfo[_pid][_user];
 
         uint256 boostedAmount = user.amount.mul(_boostMultiplier).div(BOOST_PRECISION);
-        uint256 accBeraSleep = boostedAmount.mul(poolInfo[_pid].accBeraSleepPerShare).div(ACC_BERASLEEP_PRECISION);
-        uint256 pending = accBeraSleep.sub(user.rewardDebt);
-        // SafeTransfer BERASLEEP
+        uint256 accXYzK = boostedAmount.mul(poolInfo[_pid].accXYzKPerShare).div(ACC_XYZK_PRECISION);
+        uint256 pending = accXYzK.sub(user.rewardDebt);
+        // SafeTransfer XYZK
         _safeTransfer(_user, pending);
     }
 
-    /// @notice Safe Transfer BERASLEEP.
-    /// @param _to The BERASLEEP receiver address.
-    /// @param _amount transfer BERASLEEP amounts.
+    /// @notice Safe Transfer XYZK.
+    /// @param _to The XYZK receiver address.
+    /// @param _amount transfer XYZK amounts.
     function _safeTransfer(address _to, uint256 _amount) internal {
         if (_amount > 0) {
-            // Check whether MCV2 has enough BERASLEEP. If not, harvest from MCV1.
-            if (BERASLEEP.balanceOf(address(this)) < _amount) {
+            // Check whether MCV2 has enough XYZK. If not, harvest from MCV1.
+            if (XYZK.balanceOf(address(this)) < _amount) {
                 harvestFromMasterChef();
             }
-            uint256 balance = BERASLEEP.balanceOf(address(this));
+            uint256 balance = XYZK.balanceOf(address(this));
             if (balance < _amount) {
                 _amount = balance;
             }
-            BERASLEEP.safeTransfer(_to, _amount);
+            XYZK.safeTransfer(_to, _amount);
         }
     }
 }

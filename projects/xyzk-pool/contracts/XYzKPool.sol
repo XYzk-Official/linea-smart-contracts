@@ -8,7 +8,7 @@ import "./interfaces/IMasterChefV2.sol";
 import "./interfaces/IBoostContract.sol";
 import "./interfaces/IVCake.sol";
 
-contract BeraSleepPool is Ownable, Pausable {
+contract XYzKPool is Ownable, Pausable {
     using SafeERC20 for IERC20;
 
     struct UserInfo {
@@ -101,7 +101,7 @@ contract BeraSleepPool is Ownable, Pausable {
 
     /**
      * @notice Constructor
-     * @param _token: BeraSleep token contract
+     * @param _token: XYzK token contract
      * @param _masterchefV2: MasterChefV2 contract
      * @param _admin: address of the admin
      * @param _treasury: address of the treasury (collects fees)
@@ -149,7 +149,7 @@ contract BeraSleepPool is Ownable, Pausable {
     /**
      * @notice Checks if the msg.sender is either the cake owner address or the operator address.
      */
-    modifier onlyOperatorOrBeraSleepOwner(address _user) {
+    modifier onlyOperatorOrXYzKOwner(address _user) {
         require(msg.sender == _user || msg.sender == operator, "Not operator or cake owner");
         _;
     }
@@ -162,7 +162,7 @@ contract BeraSleepPool is Ownable, Pausable {
         if (boostContract != address(0)) {
             UserInfo storage user = userInfo[_user];
             uint256 lockDuration = user.lockEndTime - user.lockStartTime;
-            IBoostContract(boostContract).onBeraSleepPoolUpdate(
+            IBoostContract(boostContract).onXYzKPoolUpdate(
                 _user,
                 user.lockedAmount,
                 lockDuration,
@@ -251,14 +251,14 @@ contract BeraSleepPool is Ownable, Pausable {
      * @dev Only possible when contract not paused.
      * @param _user: User address
      */
-    function unlock(address _user) external onlyOperatorOrBeraSleepOwner(_user) whenNotPaused {
+    function unlock(address _user) external onlyOperatorOrXYzKOwner(_user) whenNotPaused {
         UserInfo storage user = userInfo[_user];
         require(user.locked && user.lockEndTime < block.timestamp, "Cannot unlock yet");
         depositOperation(0, 0, _user);
     }
 
     /**
-     * @notice Deposit funds into the BeraSleep Pool.
+     * @notice Deposit funds into the XYzK Pool.
      * @dev Only possible when contract not paused.
      * @param _amount: number of tokens to deposit (in CAKE)
      * @param _lockDuration: Token lock duration
@@ -384,7 +384,7 @@ contract BeraSleepPool is Ownable, Pausable {
     }
 
     /**
-     * @notice Withdraw funds from the BeraSleep Pool.
+     * @notice Withdraw funds from the XYzK Pool.
      * @param _amount: Number of amount to withdraw
      */
     function withdrawByAmount(uint256 _amount) public whenNotPaused {
@@ -393,7 +393,7 @@ contract BeraSleepPool is Ownable, Pausable {
     }
 
     /**
-     * @notice Withdraw funds from the BeraSleep Pool.
+     * @notice Withdraw funds from the XYzK Pool.
      * @param _shares: Number of shares to withdraw
      */
     function withdraw(uint256 _shares) public whenNotPaused {
@@ -476,8 +476,8 @@ contract BeraSleepPool is Ownable, Pausable {
      * @notice Harvest pending CAKE tokens from MasterChef
      */
     function harvest() internal {
-        uint256 pendingBeraSleep = masterchefV2.pendingBeraSleep(cakePoolPID, address(this));
-        if (pendingBeraSleep > 0) {
+        uint256 pendingXYzK = masterchefV2.pendingXYzK(cakePoolPID, address(this));
+        if (pendingXYzK > 0) {
             uint256 balBefore = available();
             masterchefV2.withdraw(cakePoolPID, 0);
             uint256 balAfter = available();
@@ -691,7 +691,7 @@ contract BeraSleepPool is Ownable, Pausable {
     }
 
     /**
-     * @notice Withdraw unexpected tokens sent to the BeraSleep Pool
+     * @notice Withdraw unexpected tokens sent to the XYzK Pool
      */
     function inCaseTokensGetStuck(address _token) external onlyAdmin {
         require(_token != address(token), "Token cannot be same as deposit token");
@@ -726,7 +726,7 @@ contract BeraSleepPool is Ownable, Pausable {
     function calculatePerformanceFee(address _user) public view returns (uint256) {
         UserInfo storage user = userInfo[_user];
         if (user.shares > 0 && !user.locked && !freePerformanceFeeUsers[_user]) {
-            uint256 pool = balanceOf() + calculateTotalPendingBeraSleepRewards();
+            uint256 pool = balanceOf() + calculateTotalPendingXYzKRewards();
             uint256 totalAmount = (user.shares * pool) / totalShares;
             uint256 earnAmount = totalAmount - user.cakeAtLastUserAction;
             uint256 feeRate = performanceFee;
@@ -752,7 +752,7 @@ contract BeraSleepPool is Ownable, Pausable {
             !freeOverdueFeeUsers[_user] &&
             ((user.lockEndTime + UNLOCK_FREE_DURATION) < block.timestamp)
         ) {
-            uint256 pool = balanceOf() + calculateTotalPendingBeraSleepRewards();
+            uint256 pool = balanceOf() + calculateTotalPendingXYzKRewards();
             uint256 currentAmount = (pool * (user.shares)) / totalShares - user.userBoostedShare;
             uint256 earnAmount = currentAmount - user.lockedAmount;
             uint256 overdueDuration = block.timestamp - user.lockEndTime - UNLOCK_FREE_DURATION;
@@ -788,7 +788,7 @@ contract BeraSleepPool is Ownable, Pausable {
             _shares = user.shares;
         }
         if (!freeWithdrawFeeUsers[msg.sender] && (block.timestamp < user.lastDepositedTime + withdrawFeePeriod)) {
-            uint256 pool = balanceOf() + calculateTotalPendingBeraSleepRewards();
+            uint256 pool = balanceOf() + calculateTotalPendingXYzKRewards();
             uint256 sharesPercent = (_shares * PRECISION_FACTOR) / user.shares;
             uint256 currentTotalAmount = (pool * (user.shares)) /
                 totalShares -
@@ -809,16 +809,13 @@ contract BeraSleepPool is Ownable, Pausable {
      * @notice Calculates the total pending rewards that can be harvested
      * @return Returns total pending cake rewards
      */
-    function calculateTotalPendingBeraSleepRewards() public view returns (uint256) {
-        uint256 amount = masterchefV2.pendingBeraSleep(cakePoolPID, address(this));
+    function calculateTotalPendingXYzKRewards() public view returns (uint256) {
+        uint256 amount = masterchefV2.pendingXYzK(cakePoolPID, address(this));
         return amount;
     }
 
     function getPricePerFullShare() external view returns (uint256) {
-        return
-            totalShares == 0
-                ? 1e18
-                : (((balanceOf() + calculateTotalPendingBeraSleepRewards()) * (1e18)) / totalShares);
+        return totalShares == 0 ? 1e18 : (((balanceOf() + calculateTotalPendingXYzKRewards()) * (1e18)) / totalShares);
     }
 
     /**

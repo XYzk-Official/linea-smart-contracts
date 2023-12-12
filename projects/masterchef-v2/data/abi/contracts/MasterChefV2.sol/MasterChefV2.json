@@ -8,7 +8,7 @@
       },
       {
         "internalType": "contract IBEP20",
-        "name": "_BERASLEEP",
+        "name": "_XYZK",
         "type": "address"
       },
       {
@@ -154,31 +154,6 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "burnRate",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "regularFarmRate",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "specialFarmRate",
-        "type": "uint256"
-      }
-    ],
-    "name": "UpdateBeraSleepRate",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
         "indexed": true,
         "internalType": "address",
         "name": "boostContract",
@@ -262,7 +237,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "accBeraSleepPerShare",
+        "name": "accXYzKPerShare",
         "type": "uint256"
       }
     ],
@@ -292,6 +267,31 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "burnRate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "regularFarmRate",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "specialFarmRate",
+        "type": "uint256"
+      }
+    ],
+    "name": "UpdateXYzKRate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "user",
@@ -315,33 +315,7 @@
   },
   {
     "inputs": [],
-    "name": "ACC_BERASLEEP_PRECISION",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "BERASLEEP",
-    "outputs": [
-      {
-        "internalType": "contract IBEP20",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "BERASLEEP_RATE_TOTAL_PRECISION",
+    "name": "ACC_XYZK_PRECISION",
     "outputs": [
       {
         "internalType": "uint256",
@@ -367,7 +341,7 @@
   },
   {
     "inputs": [],
-    "name": "MASTERCHEF_BERASLEEP_PER_BLOCK",
+    "name": "MASTERCHEF_XYZK_PER_BLOCK",
     "outputs": [
       {
         "internalType": "uint256",
@@ -407,6 +381,32 @@
   {
     "inputs": [],
     "name": "MAX_BOOST_PRECISION",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "XYZK",
+    "outputs": [
+      {
+        "internalType": "contract IBEP20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "XYZK_RATE_TOTAL_PRECISION",
     "outputs": [
       {
         "internalType": "uint256",
@@ -479,7 +479,7 @@
         "type": "bool"
       }
     ],
-    "name": "burnBeraSleep",
+    "name": "burnXYzK",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -695,7 +695,7 @@
         "type": "address"
       }
     ],
-    "name": "pendingBeraSleep",
+    "name": "pendingXYzK",
     "outputs": [
       {
         "internalType": "uint256",
@@ -718,7 +718,7 @@
     "outputs": [
       {
         "internalType": "uint256",
-        "name": "accBeraSleepPerShare",
+        "name": "accXYzKPerShare",
         "type": "uint256"
       },
       {
@@ -830,34 +830,6 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_burnRate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_regularFarmRate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_specialFarmRate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "_withUpdate",
-        "type": "bool"
-      }
-    ],
-    "name": "updateBeraSleepRate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "_newBoostContract",
         "type": "address"
@@ -918,7 +890,7 @@
         "components": [
           {
             "internalType": "uint256",
-            "name": "accBeraSleepPerShare",
+            "name": "accXYzKPerShare",
             "type": "uint256"
           },
           {
@@ -964,6 +936,34 @@
       }
     ],
     "name": "updateWhiteList",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_burnRate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_regularFarmRate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_specialFarmRate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_withUpdate",
+        "type": "bool"
+      }
+    ],
+    "name": "updateXYzKRate",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

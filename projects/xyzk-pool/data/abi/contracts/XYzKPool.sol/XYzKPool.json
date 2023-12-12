@@ -794,7 +794,7 @@
   },
   {
     "inputs": [],
-    "name": "calculateTotalPendingBeraSleepRewards",
+    "name": "calculateTotalPendingXYzKRewards",
     "outputs": [
       {
         "internalType": "uint256",

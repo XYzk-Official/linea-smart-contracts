@@ -8,10 +8,10 @@ const main = async () => {
   const treasury = deployer.address;
   const operator = deployer.address;
 
-  const BeraSleepPoolContract = await ethers.getContractFactory("BeraSleepPool");
+  const PoolContract = await ethers.getContractFactory("XYzKPool");
 
-  const beraSleepPool = await BeraSleepPoolContract.deploy(
-    config.BeraSleep[name],
+  const xyzkPool = await PoolContract.deploy(
+    config.XYzK[name],
     config.MasterChefV2[name],
     admin,
     treasury,
@@ -19,7 +19,7 @@ const main = async () => {
     config.pid[name]
   );
 
-  console.log("BeraSleepPool: ", beraSleepPool.address);
+  console.log("XYzKPool: ", xyzkPool.address);
 };
 
 main()

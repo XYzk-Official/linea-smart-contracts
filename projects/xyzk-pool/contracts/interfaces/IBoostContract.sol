@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 interface IBoostContract {
-    function onBeraSleepPoolUpdate(
+    function onXYzKPoolUpdate(
         address _user,
         uint256 _lockedAmount,
         uint256 _lockedDuration,

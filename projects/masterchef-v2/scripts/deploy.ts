@@ -11,8 +11,8 @@ const main = async () => {
   console.log("Deployer address", deployer.address);
 
   const masterchefV2 = await MasterChefV2Contract.deploy(
-    config.MasterChefV2[name],
-    config.BeraSleep[name],
+    config.MasterChef[name],
+    config.XYzK[name],
     config.MasterPID[name],
     burnAdmin
   );
