@@ -2,8 +2,8 @@
   {
     "inputs": [
       {
-        "internalType": "contract IBeraSleepPool",
-        "name": "_beraSleepPool",
+        "internalType": "contract IXYzKPool",
+        "name": "_xyzkPool",
         "type": "address"
       },
       {
@@ -71,19 +71,6 @@
     "outputs": [
       {
         "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "beraSleepPool",
-    "outputs": [
-      {
-        "internalType": "contract IBeraSleepPool",
         "name": "",
         "type": "address"
       }
@@ -167,6 +154,19 @@
     "name": "updateCeiling",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "xyzkPool",
+    "outputs": [
+      {
+        "internalType": "contract IXYzKPool",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]

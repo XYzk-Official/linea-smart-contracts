@@ -2,11 +2,11 @@
 pragma solidity ^0.6.12;
 pragma experimental ABIEncoderV2;
 
-interface IBeraSleepPool {
+interface IXYzKPool {
     struct UserInfo {
         uint256 shares;
         uint256 lastDepositedTime;
-        uint256 beraSleepAtLastUserAction;
+        uint256 cakeAtLastUserAction;
         uint256 lastUserActionTime;
         uint256 lockStartTime;
         uint256 lockEndTime;

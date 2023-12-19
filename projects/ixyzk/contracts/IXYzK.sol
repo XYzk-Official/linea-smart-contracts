@@ -5,12 +5,12 @@ pragma experimental ABIEncoderV2;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
-import "./interfaces/IBeraSleepPool.sol";
+import "./interfaces/IXYzKPool.sol";
 
-contract IBeraSleep is Ownable {
+contract IXYzK is Ownable {
     using SafeMath for uint256;
 
-    IBeraSleepPool public immutable beraSleepPool;
+    IXYzKPool public immutable xyzkPool;
 
     address public admin;
     // threshold of locked duration
@@ -30,25 +30,25 @@ contract IBeraSleep is Ownable {
 
     /**
      * @notice Constructor
-     * @param _beraSleepPool: BeraSleep pool contract
+     * @param _xyzkPool: XYzK pool contract
      * @param _admin: admin of the this contract
      * @param _ceiling: the max locked duration which the linear decrease start
      */
-    constructor(IBeraSleepPool _beraSleepPool, address _admin, uint256 _ceiling) public {
+    constructor(IXYzKPool _xyzkPool, address _admin, uint256 _ceiling) public {
         require(_ceiling >= MIN_CEILING_DURATION, "Invalid ceiling duration");
-        beraSleepPool = _beraSleepPool;
+        xyzkPool = _xyzkPool;
         admin = _admin;
         ceiling = _ceiling;
     }
 
     /**
-     * @notice calculate iBeraSleep credit per user.
+     * @notice calculate iXYzK credit per user.
      * @param _user: user address.
      */
     function getUserCredit(address _user) external view returns (uint256) {
         require(_user != address(0), "getUserCredit: Invalid address");
 
-        IBeraSleepPool.UserInfo memory userInfo = beraSleepPool.userInfo(_user);
+        IXYzKPool.UserInfo memory userInfo = xyzkPool.userInfo(_user);
 
         if (!userInfo.locked || block.timestamp > userInfo.lockEndTime) {
             return 0;
@@ -65,7 +65,7 @@ contract IBeraSleep is Ownable {
     }
 
     /**
-     * @notice update ceiling thereshold duration for iBeraSleep calculation.
+     * @notice update ceiling thereshold duration for iXYzK calculation.
      * @param _newCeiling: new threshold duration.
      */
     function updateCeiling(uint256 _newCeiling) external onlyAdmin {

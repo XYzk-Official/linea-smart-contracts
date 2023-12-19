@@ -7,6 +7,12 @@ import "hardhat-contract-sizer";
 import "solidity-coverage";
 import "dotenv/config";
 
+const lineaTest: NetworkUserConfig = {
+  chainId: 59140,
+  url: "https://rpc.goerli.linea.build/",
+  accounts: [process.env.KEY_TESTNET!],
+};
+
 const bscTestnet: NetworkUserConfig = {
   url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
   chainId: 97,
@@ -29,7 +35,7 @@ const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {},
-    testnet: ftmTest,
+    testnet: lineaTest,
     // mainnet: bscMainnet,
   },
   solidity: {

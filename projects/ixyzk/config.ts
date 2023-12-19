@@ -4,9 +4,9 @@ export default {
     mainnet: "0x0000000000000000000000000000000000000000",
     testnet: "0x10A0031781971bd37504354BBa49299885aD5cd4",
   },
-  BeraSleepPool: {
+  XYzKPool: {
     mainnet: "0x0000000000000000000000000000000000000000",
-    testnet: "0xAE06cF3a2247aea8217e95E2e26b440bfB7C9b99",
+    testnet: "0x534098b02BBbafcBaFc6174bf06717245BE01C06",
   },
   ceiling: {
     mainnet: "15811200",
