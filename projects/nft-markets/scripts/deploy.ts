@@ -5,11 +5,11 @@ const main = async () => {
 
   const admin = "0x10A0031781971bd37504354BBa49299885aD5cd4";
   const treasury = "0x10A0031781971bd37504354BBa49299885aD5cd4";
-  const WBera = "0x11DC191B1D664fcE05565A456C80aE81AB4914e9";
-  const minimumAskPrice = "5000000000000000"; // 0.005 WBERA
-  const maximumAskPrice = "10000000000000000000000"; // 10,000 WBERA
+  const WXYzK = "0xEB9Ee513943FcaeC858B74441B5A4205380b9560";
+  const minimumAskPrice = "5000000000000000"; // 0.005 WXYzK
+  const maximumAskPrice = "10000000000000000000000"; // 10,000 WXYzK
 
-  const contract = await ERC721NFTMarketV1.deploy(admin, treasury, WBera, minimumAskPrice, maximumAskPrice);
+  const contract = await ERC721NFTMarketV1.deploy(admin, treasury, WXYzK, minimumAskPrice, maximumAskPrice);
 
   console.log("ERC721NFTMarketV1 address: ", contract.address);
 };
