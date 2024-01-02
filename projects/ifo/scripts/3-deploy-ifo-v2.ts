@@ -12,8 +12,8 @@ const main = async () => {
   const lpToken = "0x37e16520C636E184E766A13f0339F61f263a56a5";
   const offeringToken = "0x04c8b978C739dfEc62a2F913c870cf47C30228EC";
   const profile = "0x0E59D921E2E8E14AB20276b064abAB0417c30A57";
-  const startBlock = "1703749773"; // Thursday, December 28, 2023 2:49:33 PM
-  const endBlock = "1703922573"; // Saturday, December 30, 2023 2:49:33 PM
+  const startBlock = "1704447371"; // Friday, January 5, 2024 9:36:11 AM
+  const endBlock = "1704620171"; // Sunday, January 7, 2024 9:36:11 AM
 
   const offeringAmountPool0 = parseEther("50");
   const raisingAmountPool0 = parseEther("5");
@@ -23,7 +23,7 @@ const main = async () => {
   const raisingAmountPool1 = parseEther("100");
   const limitPerUserInLp = parseEther("0.5");
 
-  const campaignId = "512100001";
+  const campaignId = "512100002";
   const numberPoints = "100";
   const thresholdPoints = parseEther("0.035");
 
