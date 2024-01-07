@@ -12,42 +12,13 @@ const main = async () => {
   const lpToken = "0x37e16520C636E184E766A13f0339F61f263a56a5";
   const offeringToken = "0x04c8b978C739dfEc62a2F913c870cf47C30228EC";
   const profile = "0x0E59D921E2E8E14AB20276b064abAB0417c30A57";
-  const startBlock = "1704447371"; // Friday, January 5, 2024 9:36:11 AM
-  const endBlock = "1704620171"; // Sunday, January 7, 2024 9:36:11 AM
-
-  const offeringAmountPool0 = parseEther("50");
-  const raisingAmountPool0 = parseEther("5");
-
-  // IFO Pool 1
-  const offeringAmountPool1 = parseEther("1000");
-  const raisingAmountPool1 = parseEther("100");
-  const limitPerUserInLp = parseEther("0.5");
-
-  const campaignId = "512100002";
-  const numberPoints = "100";
-  const thresholdPoints = parseEther("0.035");
+  const startBlock = "2797351";
+  const endBlock = "2806351";
 
   const ifoV2 = await IFOV2Contract.deploy(lpToken, offeringToken, profile, startBlock, endBlock, admin);
   await ifoV2.deployed();
 
   console.log("New IFOV2 deployed to:", ifoV2.address);
-  await ifoV2.setPool(
-    offeringAmountPool0,
-    raisingAmountPool0,
-    limitPerUserInLp,
-    false, // tax
-    "0"
-  );
-
-  await ifoV2.setPool(
-    offeringAmountPool1,
-    raisingAmountPool1,
-    "0",
-    true, // tax
-    "1"
-  );
-
-  await ifoV2.updatePointParameters(campaignId, numberPoints, thresholdPoints);
 };
 
 main()

@@ -6,6 +6,9 @@ import "hardhat-abi-exporter";
 import "hardhat-contract-sizer";
 import "solidity-coverage";
 import "dotenv/config";
+import "./tasks/updateIFOTime";
+import "./tasks/setPool";
+import "./tasks/updatePoint";
 
 const bscTestnet: NetworkUserConfig = {
   url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
